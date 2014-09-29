@@ -1,0 +1,1 @@
+java -jar d:\software\proguard4.8\lib\proguard.jar @library.pro

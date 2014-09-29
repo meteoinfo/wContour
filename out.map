@@ -1,0 +1,125 @@
+wContour.Contour -> wContour.Contour:
+    java.util.List _endPointList -> a
+    52:56:java.util.List tracingContourLines(double[][],double[],double[],int,double[],double,java.util.List,int[][]) -> tracingContourLines
+    72:432:java.util.List tracingBorders(double[][],double[],double[],int[][],double) -> tracingBorders
+    940:981:java.util.List smoothLines(java.util.List) -> smoothLines
+    991:991:java.util.List smoothPoints(java.util.List) -> smoothPoints
+    1004:1214:java.util.List tracingPolygons(double[][],java.util.List,java.util.List,double[]) -> tracingPolygons
+    1468:1502:boolean pointInPolygon(java.util.List,wContour.Global.PointD) -> pointInPolygon
+    1513:1526:boolean pointInPolygon(wContour.Global.Polygon,wContour.Global.PointD) -> pointInPolygon
+    1538:1543:java.util.List clipPolylines(java.util.List,java.util.List) -> clipPolylines
+    1554:1583:java.util.List clipPolygons(java.util.List,java.util.List) -> clipPolygons
+    1834:2017:boolean traceIsoline_UndefData(int,int,double[][],double[][],int,int,double[],double[],double,double,double,int[],double[],boolean[]) -> a
+    2024:2373:java.util.List isoline_UndefData(double[][],double[],double[],double,double,double,double[][],double[][],int[][][],int[][][],int) -> a
+    3339:3611:java.util.List tracingPolygons(java.util.List,java.util.List) -> a
+    3615:3838:java.util.List tracingClipPolygons(wContour.Global.Polygon,java.util.List,java.util.List) -> a
+    3846:3932:java.util.List judgePolygonHighCenter(java.util.List,java.util.List,java.util.List,java.util.List) -> a
+    4032:4454:java.util.List tracingPolygons_Ring(java.util.List,java.util.List,wContour.Global.Border,double[],int[]) -> a
+    4458:4510:java.util.List addPolygonHoles(java.util.List) -> a
+    4515:4567:java.util.List addPolygonHoles_Ring(java.util.List) -> b
+    4573:4594:void addHoles_Ring(java.util.List,java.util.List) -> b
+    4599:4725:java.util.List cutPolyline(wContour.Global.PolyLine,java.util.List) -> a
+    4729:4966:java.util.List cutPolygon_Hole(wContour.Global.Polygon,java.util.List) -> a
+    4970:5151:java.util.List cutPolygon(wContour.Global.Polygon,java.util.List) -> b
+    5155:5182:boolean twoPointsInside(int,int,int,int) -> a
+    5194:5246:java.util.List BSplineScanning(java.util.List,int) -> a
+    5250:5266:double[] BSpline(java.util.List,double,int) -> a
+    5306:5504:java.util.List tracingStreamline(double[][],double[][],double[],double[],double,int) -> tracingStreamline
+    5686:5745:boolean tracingStreamlinePoint(wContour.Global.PointD,double[][],double[][],double[],double[],int[],boolean) -> a
+    5749:5753:double distance_point2line(wContour.Global.PointD,wContour.Global.PointD,wContour.Global.PointD) -> a
+    5762:5792:wContour.Global.Extent getExtent(java.util.List) -> c
+    5799:5829:double getExtentAndArea(java.util.List,wContour.Global.Extent) -> a
+    5841:5870:boolean isClockwise(java.util.List) -> isClockwise
+    5876:5895:boolean isLineSegmentCross(wContour.Global.Line,wContour.Global.Line) -> a
+    5901:5905:boolean isExtentCross(wContour.Global.Extent,wContour.Global.Extent) -> a
+    5920:5947:wContour.Global.PointF getCrossPoint(wContour.Global.PointF,wContour.Global.PointF,wContour.Global.PointF,wContour.Global.PointF) -> getCrossPoint
+    5951:5978:wContour.Global.PointD getCrossPoint(wContour.Global.Line,wContour.Global.Line) -> b
+    5985:6007:java.util.List insertPoint2Border(java.util.List,java.util.List) -> c
+    6227:6271:java.util.List insertPoint2Border_Ring(double[][],java.util.List,wContour.Global.Border,int[]) -> a
+    6275:6279:boolean doubleEquals(double,double) -> a
+wContour.Global.Border -> wContour.Global.Border:
+    java.util.List LineList -> LineList
+    39:39:int getLineNum() -> getLineNum
+wContour.Global.BorderLine -> wContour.Global.BorderLine:
+    double area -> area
+    wContour.Global.Extent extent -> extent
+    boolean isOutLine -> isOutLine
+    boolean isClockwise -> isClockwise
+    java.util.List pointList -> pointList
+    java.util.List ijPointList -> ijPointList
+wContour.Global.BorderPoint -> wContour.Global.BorderPoint:
+    int Id -> Id
+    int BorderIdx -> BorderIdx
+    int BInnerIdx -> BInnerIdx
+    wContour.Global.PointD Point -> Point
+    double Value -> Value
+    55:62:java.lang.Object clone() -> clone
+wContour.Global.EndPoint -> wContour.Global.EndPoint:
+    wContour.Global.PointD sPoint -> sPoint
+    wContour.Global.PointD Point -> Point
+    int Index -> Index
+    int BorderIdx -> BorderIdx
+wContour.Global.Extent -> wContour.Global.Extent:
+    double xMin -> xMin
+    double yMin -> yMin
+    double xMax -> xMax
+    double yMax -> yMax
+    71:74:boolean Include(wContour.Global.Extent) -> Include
+wContour.Global.IJPoint -> wContour.Global.IJPoint:
+    int I -> I
+    int J -> J
+wContour.Global.LPolygon -> wContour.Global.LPolygon:
+    double value -> value
+    boolean isFirst -> isFirst
+    java.util.List pointList -> pointList
+wContour.Global.LegendPara -> wContour.Global.LegendPara:
+    boolean isVertical -> isVertical
+    wContour.Global.PointD startPoint -> startPoint
+    double length -> length
+    double width -> width
+    double[] contourValues -> contourValues
+    boolean isTriangle -> isTriangle
+wContour.Global.Line -> wContour.Global.Line:
+    wContour.Global.PointD P1 -> P1
+    wContour.Global.PointD P2 -> P2
+wContour.Global.PointD -> wContour.Global.PointD:
+    double X -> X
+    double Y -> Y
+    60:60:java.lang.Object clone() -> clone
+wContour.Global.PointF -> wContour.Global.PointF:
+    float X -> X
+    float Y -> Y
+wContour.Global.PolyLine -> wContour.Global.PolyLine:
+    double Value -> Value
+    java.lang.String Type -> Type
+    int BorderIdx -> BorderIdx
+    java.util.List PointList -> PointList
+wContour.Global.Polygon -> wContour.Global.Polygon:
+    boolean IsBorder -> IsBorder
+    boolean IsInnerBorder -> IsInnerBorder
+    double LowValue -> LowValue
+    double HighValue -> HighValue
+    boolean IsClockWise -> IsClockWise
+    int StartPointIdx -> StartPointIdx
+    boolean IsHighCenter -> IsHighCenter
+    wContour.Global.Extent Extent -> Extent
+    double Area -> Area
+    wContour.Global.PolyLine OutLine -> OutLine
+    java.util.List HoleLines -> HoleLines
+    int HoleIndex -> HoleIndex
+    91:104:java.lang.Object Clone() -> Clone
+    111:111:boolean HasHoles() -> HasHoles
+    119:120:void AddHole(wContour.Global.Polygon) -> AddHole
+    127:134:void AddHole(java.util.List) -> AddHole
+wContour.Interpolate -> wContour.Interpolate:
+    46:60:java.util.List createGridXY_Delt(double,double,double,double,double,double) -> createGridXY_Delt
+    77:87:void createGridXY_Num(double,double,double,double,double[],double[]) -> createGridXY_Num
+    101:168:double[][] interpolation_IDW_Neighbor(double[][],double[],double[],int) -> interpolation_IDW_Neighbor
+    185:275:double[][] interpolation_IDW_Neighbor(double[][],double[],double[],int,double) -> interpolation_IDW_Neighbor
+    292:352:double[][] interpolation_IDW_Radius(double[][],double[],double[],int,double,double) -> interpolation_IDW_Radius
+    370:464:double[][] interpolation_Grid(double[][],double[],double[],double,double[],double[]) -> interpolation_Grid
+    480:487:double[][] cressman(double[][],double[],double[],double) -> cressman
+    501:697:double[][] cressman(double[][],double[],double[],double,java.util.List) -> cressman
+    715:760:double[][] assignPointToGrid(double[][],double[],double[],double) -> assignPointToGrid
+wContour.Legend -> wContour.Legend:
+    40:190:java.util.List createLegend(wContour.Global.LegendPara) -> createLegend
