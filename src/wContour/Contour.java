@@ -1090,7 +1090,10 @@ public class Contour {
                 } else //Has contour lines in this border
                 {
                     //Insert the border points of the contour lines to the border point list of the border
-                    newBPList = insertPoint2Border(bPList, aBorderList);
+                    if (bPList.size() > 0)
+                        newBPList = insertPoint2Border(bPList, aBorderList);
+                    else
+                        newBPList = aBorderList;
                     //aPolygonList = TracingPolygons(lineList, newBPList, aBound, contour);
                     aPolygonList = tracingPolygons(lineList, newBPList);
                 }
@@ -3891,25 +3894,30 @@ public class Contour {
             aPolygon = borderPolygons.get(i);
             if (aPolygon.OutLine.Type.equals("Close")) {
                 cBound1 = aPolygon.Extent;
-                aValue = aPolygon.LowValue;
+                //aValue = aPolygon.LowValue;
                 aPoint = aPolygon.OutLine.PointList.get(0);
                 for (j = i - 1; j >= 0; j--) {
                     bPolygon = borderPolygons.get(j);
                     cBound2 = bPolygon.Extent;
-                    bValue = bPolygon.LowValue;
+                    //bValue = bPolygon.LowValue;
                     newPList = new ArrayList<PointD>(bPolygon.OutLine.PointList);
                     if (pointInPolygon(newPList, aPoint)) {
                         if (cBound1.xMin > cBound2.xMin && cBound1.yMin > cBound2.yMin
                                 && cBound1.xMax < cBound2.xMax && cBound1.yMax < cBound2.yMax) {
-                            if (aValue < bValue) {
-                                aPolygon.IsHighCenter = false;
-                                //borderPolygons[i] = aPolygon;
-                            } else if (aValue == bValue) {
-                                if (bPolygon.IsHighCenter) {
-                                    aPolygon.IsHighCenter = false;
-                                    //borderPolygons[i] = aPolygon;
-                                }
+                            if (bPolygon.IsHighCenter){
+                                aPolygon.IsHighCenter = aPolygon.HighValue != bPolygon.LowValue;
+                            } else {
+                                aPolygon.IsHighCenter = aPolygon.LowValue == bPolygon.HighValue;
                             }
+//                            if (aValue < bValue) {
+//                                aPolygon.IsHighCenter = false;
+//                                //borderPolygons[i] = aPolygon;
+//                            } else if (aValue == bValue) {
+//                                if (!bPolygon.IsHighCenter) {
+//                                    aPolygon.IsHighCenter = false;
+//                                    //borderPolygons[i] = aPolygon;
+//                                }
+//                            }
                             break;
                         }
                     }
