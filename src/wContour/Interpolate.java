@@ -18,7 +18,7 @@ public class Interpolate {
     // <editor-fold desc="IDW">
     /**
      * Create grid x/y coordinate arrays with x/y delt
-     * 
+     *
      * @param Xlb x of left-bottom
      * @param Ylb y of left-bottom
      * @param Xrt x of right-top
@@ -39,7 +39,7 @@ public class Interpolate {
         for (i = 0; i < Ynum; i++) {
             Y[i] = Ylb + i * YDelt;
         }
-        
+
         List<double[]> values = new ArrayList<double[]>();
         values.add(X);
         values.add(Y);
@@ -48,7 +48,7 @@ public class Interpolate {
 
     /**
      * Create grid X/Y coordinate
-     * 
+     *
      * @param Xlb X left bottom
      * @param Ylb Y left bottom
      * @param Xrt X right top
@@ -74,7 +74,7 @@ public class Interpolate {
 
     /**
      * Interpolation with IDW neighbor method
-     * 
+     *
      * @param SCoords discrete data array
      * @param X grid X array
      * @param Y grid Y array
@@ -156,7 +156,7 @@ public class Interpolate {
 
     /**
      * Interpolation with IDW neighbor method
-     * 
+     *
      * @param SCoords discrete data array
      * @param X grid X array
      * @param Y grid Y array
@@ -164,106 +164,92 @@ public class Interpolate {
      * @param unDefData undefine data
      * @return interpolated grid data
      */
-        public static double[][] interpolation_IDW_Neighbor(double[][] SCoords, double[] X, double[] Y,
-          int NumberOfNearestNeighbors, double unDefData)
-        {
-            int rowNum, colNum, pNum;
-            colNum = X.length;
-            rowNum = Y.length;
-            pNum = SCoords.length;
-            double[][] GCoords = new double[rowNum][colNum];
-            int i, j, p, l, aP;
-            double w, SV, SW, aMin;
-            int points;
-            points = NumberOfNearestNeighbors;
-            double[] AllWeights = new double[pNum];
-            double[][] NW = new double[2][points];
-            int NWIdx;
+    public static double[][] interpolation_IDW_Neighbor(double[][] SCoords, double[] X, double[] Y,
+            int NumberOfNearestNeighbors, double unDefData) {
+        int rowNum, colNum, pNum;
+        colNum = X.length;
+        rowNum = Y.length;
+        pNum = SCoords.length;
+        double[][] GCoords = new double[rowNum][colNum];
+        int i, j, p, l, aP;
+        double w, SV, SW, aMin;
+        int points;
+        points = NumberOfNearestNeighbors;
+        double[] AllWeights = new double[pNum];
+        double[][] NW = new double[2][points];
+        int NWIdx;
 
-            //---- Do interpolation with IDW method 
-            for (i = 0; i < rowNum; i++)
-            {
-                for (j = 0; j < colNum; j++)
-                {
-                    GCoords[i][j] = unDefData;
-                    SV = 0;
-                    SW = 0;
-                    NWIdx = 0;
-                    for (p = 0; p < pNum; p++)
-                    {
-                        if (SCoords[p][2] == unDefData)
-                        {
-                            AllWeights[p] = -1;
-                            continue;
-                        }
-                        if (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2) == 0)
-                        {
-                            GCoords[i][j] = SCoords[p][2];
-                            break;
-                        }
-                        else
-                        {
-                            w = 1 / (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2));
-                            AllWeights[p] = w;
-                            if (NWIdx < points)
-                            {
-                                NW[0][NWIdx] = w;
-                                NW[1][NWIdx] = p;
-                            }
-                            NWIdx += 1;
-                        }
+        //---- Do interpolation with IDW method 
+        for (i = 0; i < rowNum; i++) {
+            for (j = 0; j < colNum; j++) {
+                GCoords[i][j] = unDefData;
+                SV = 0;
+                SW = 0;
+                NWIdx = 0;
+                for (p = 0; p < pNum; p++) {
+                    if (SCoords[p][2] == unDefData) {
+                        AllWeights[p] = -1;
+                        continue;
                     }
-
-                    if (GCoords[i][j] == unDefData)
-                    {
-                        for (p = 0; p < pNum; p++)
-                        {
-                            w = AllWeights[p];
-                            if (w == -1)
-                                continue;
-
-                            aMin = NW[0][0];
-                            aP = 0;
-                            for (l = 1; l < points; l++)
-                            {
-                                if ((double)NW[0][l] < aMin)
-                                {
-                                    aMin = (double)NW[0][l];
-                                    aP = l;
-                                }
-                            }
-                            if (w > aMin)
-                            {
-                                NW[0][aP] = w;
-                                NW[1][aP] = p;
-                            }
+                    if (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2) == 0) {
+                        GCoords[i][j] = SCoords[p][2];
+                        break;
+                    } else {
+                        w = 1 / (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2));
+                        AllWeights[p] = w;
+                        if (NWIdx < points) {
+                            NW[0][NWIdx] = w;
+                            NW[1][NWIdx] = p;
                         }
-                        for (p = 0; p < points; p++)
-                        {
-                            SV += (double)NW[0][p] * SCoords[(int)NW[1][p]][2];
-                            SW += (double)NW[0][p];
-                        }
-                        GCoords[i][j] = SV / SW;
+                        NWIdx += 1;
                     }
                 }
+
+                if (GCoords[i][j] == unDefData) {
+                    for (p = 0; p < pNum; p++) {
+                        w = AllWeights[p];
+                        if (w == -1) {
+                            continue;
+                        }
+
+                        aMin = NW[0][0];
+                        aP = 0;
+                        for (l = 1; l < points; l++) {
+                            if ((double) NW[0][l] < aMin) {
+                                aMin = (double) NW[0][l];
+                                aP = l;
+                            }
+                        }
+                        if (w > aMin) {
+                            NW[0][aP] = w;
+                            NW[1][aP] = p;
+                        }
+                    }
+                    for (p = 0; p < points; p++) {
+                        SV += (double) NW[0][p] * SCoords[(int) NW[1][p]][2];
+                        SW += (double) NW[0][p];
+                    }
+                    GCoords[i][j] = SV / SW;
+                }
+            }
+        }
+
+        //---- Smooth with 5 points
+        double s = 0.5;
+        for (i = 1; i < rowNum - 1; i++) {
+            for (j = 1; j < colNum - 1; j++) {
+                GCoords[i][j] = GCoords[i][j] + s / 4 * (GCoords[i + 1][j] + GCoords[i - 1][j] + GCoords[i][j + 1]
+                        + GCoords[i][j - 1] - 4 * GCoords[i][j]);
             }
 
-            //---- Smooth with 5 points
-            double s = 0.5;
-            for (i = 1; i < rowNum - 1; i++)
-            {
-                for (j = 1; j < colNum - 1; j++)
-                    GCoords[i][j] = GCoords[i][j] + s / 4 * (GCoords[i + 1][j] + GCoords[i - 1][j] + GCoords[i][j + 1] +
-                      GCoords[i][j - 1] - 4 * GCoords[i][j]);
+        }
 
-            }
-
-            return GCoords;
-        }    
+        return GCoords;
+    }
 
     /**
      * Interpolation with IDW neighbor method
-     * 
+     *
      * @param SCoords discrete data array
      * @param X grid X array
      * @param Y grid Y array
@@ -340,7 +326,7 @@ public class Interpolate {
 
     /**
      * Interpolate from grid data
-     * 
+     *
      * @param GridData input grid data
      * @param X input x coordinates
      * @param Y input y coordinates
@@ -451,11 +437,10 @@ public class Interpolate {
     }
 
     // </editor-fold>
-    
     // <editor-fold desc="Cressman">
     /**
      * Cressman analysis
-     * 
+     *
      * @param stationData station data array - x,y,value
      * @param X x array
      * @param Y y array
@@ -475,7 +460,7 @@ public class Interpolate {
 
     /**
      * Cressman analysis
-     * 
+     *
      * @param stData station data array - x,y,value
      * @param X x array
      * @param Y y array
@@ -523,7 +508,6 @@ public class Interpolate {
         //        gridData[i, j] = sum;
         //    }
         //}
-
         //Initial the arrays
         double HITOP = -999900000000000000000.0;
         double HIBOT = 999900000000000000000.0;
@@ -684,16 +668,15 @@ public class Interpolate {
     }
 
     // </editor-fold>
-    
     // <editor-fold desc="Others">
     /**
      * Assign point value to grid value
-     * 
+     *
      * @param SCoords point value array
      * @param X x coordinate
      * @param Y y coordinate
      * @param unDefData undefine value
-     * @return  grid data
+     * @return grid data
      */
     public static double[][] assignPointToGrid(double[][] SCoords, double[] X, double[] Y,
             double unDefData) {
