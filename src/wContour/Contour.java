@@ -35,12 +35,32 @@ public class Contour {
      */
     public static List<PolyLine> tracingContourLines(double[][] S0, double[] X, double[] Y,
             int nc, double[] contour, double undefData, List<Border> borders, int[][] S1) {
-        double dx = X[1] - X[0];
-        double dy = Y[1] - Y[0];
-        List<PolyLine> contourLines = createContourLines_UndefData(S0, X, Y, nc, contour, dx, dy, S1, undefData, borders);
+        List<PolyLine> contourLines = createContourLines_UndefData(S0, X, Y, nc, contour, S1, undefData, borders);
 
         return contourLines;
     }
+    
+//    /**
+//     * Tracing contour lines from the grid data with undefine data
+//     *
+//     * @param S0 input grid data
+//     * @param X X coordinate array
+//     * @param Y Y coordinate array
+//     * @param nc number of contour values
+//     * @param contour contour value array
+//     * @param undefData Undefine data
+//     * @param borders borders
+//     * @param S1 data flag array
+//     * @return Contour line list
+//     */
+//    public static List<PolyLine> tracingContourLines(double[][] S0, double[] X, double[] Y,
+//            int nc, double[] contour, double undefData, List<Border> borders, int[][] S1) {
+//        double dx = X[1] - X[0];
+//        double dy = Y[1] - Y[0];
+//        List<PolyLine> contourLines = createContourLines_UndefData(S0, X, Y, nc, contour, dx, dy, S1, undefData, borders);
+//
+//        return contourLines;
+//    }
 
     /**
      * Tracing contour borders of the grid data with undefined data. Grid data
@@ -434,7 +454,7 @@ public class Contour {
      * @return contour line list
      */
     private static List<PolyLine> createContourLines_UndefData(double[][] S0, double[] X, double[] Y,
-            int nc, double[] contour, double nx, double ny, int[][] S1, double undefData, List<Border> borders) {
+            int nc, double[] contour, int[][] S1, double undefData, List<Border> borders) {
         List<PolyLine> contourLineList = new ArrayList<PolyLine>();
         List<PolyLine> cLineList;
         int m, n, i, j;
@@ -545,7 +565,7 @@ public class Contour {
                 }
             }
 
-            cLineList = isoline_UndefData(S0, X, Y, w, nx, ny, S, H, SB, HB, contourLineList.size());
+            cLineList = isoline_UndefData(S0, X, Y, w, S, H, SB, HB, contourLineList.size());
             contourLineList.addAll(cLineList);
         }
 
@@ -571,6 +591,160 @@ public class Contour {
 
         return contourLineList;
     }
+    
+//    /**
+//     * Create contour lines from the grid data with undefine data
+//     *
+//     * @param S0 input grid data
+//     * @param X X coordinate array
+//     * @param Y Y coordinate array
+//     * @param nc number of contour values
+//     * @param contour contour value array
+//     * @param nx interval of X coordinate
+//     * @param ny interval of Y coordinate
+//     * @param S1 flag array
+//     * @param undefData undefine data
+//     * @param borders border line list
+//     * @return contour line list
+//     */
+//    private static List<PolyLine> createContourLines_UndefData(double[][] S0, double[] X, double[] Y,
+//            int nc, double[] contour, double nx, double ny, int[][] S1, double undefData, List<Border> borders) {
+//        List<PolyLine> contourLineList = new ArrayList<PolyLine>();
+//        List<PolyLine> cLineList;
+//        int m, n, i, j;
+//        m = S0.length;    //---- Y
+//        n = S0[0].length;    //---- X
+//
+//        //---- Add a small value to aviod the contour point as same as data point
+//        double dShift;
+//        dShift = contour[0] * 0.00001;
+//        if (dShift == 0) {
+//            dShift = 0.00001;
+//        }
+//        for (i = 0; i < m; i++) {
+//            for (j = 0; j < n; j++) {
+//                if (!(doubleEquals(S0[i][j], undefData))) //S0[i, j] = S0[i, j] + (contour[1] - contour[0]) * 0.0001;
+//                {
+//                    S0[i][j] = S0[i][j] + dShift;
+//                }
+//            }
+//        }
+//
+//        //---- Define if H S are border
+//        int[][][] SB = new int[2][m][n - 1], HB = new int[2][m - 1][n];   //---- Which border and trace direction
+//        for (i = 0; i < m; i++) {
+//            for (j = 0; j < n; j++) {
+//                if (j < n - 1) {
+//                    SB[0][i][j] = -1;
+//                    SB[1][i][j] = -1;
+//                }
+//                if (i < m - 1) {
+//                    HB[0][i][j] = -1;
+//                    HB[1][i][j] = -1;
+//                }
+//            }
+//        }
+//        Border aBorder;
+//        BorderLine aBLine;
+//        List<IJPoint> ijPList;
+//        int k, si, sj;
+//        IJPoint aijP, bijP;
+//        for (i = 0; i < borders.size(); i++) {
+//            aBorder = borders.get(i);
+//            for (j = 0; j < aBorder.getLineNum(); j++) {
+//                aBLine = aBorder.LineList.get(j);
+//                ijPList = aBLine.ijPointList;
+//                for (k = 0; k < ijPList.size() - 1; k++) {
+//                    aijP = ijPList.get(k);
+//                    bijP = ijPList.get(k + 1);
+//                    if (aijP.I == bijP.I) {
+//                        si = aijP.I;
+//                        sj = Math.min(aijP.J, bijP.J);
+//                        SB[0][si][sj] = i;
+//                        if (bijP.J > aijP.J) //---- Trace from top
+//                        {
+//                            SB[1][si][sj] = 1;
+//                        } else {
+//                            SB[1][si][sj] = 0;    //----- Trace from bottom
+//                        }
+//                    } else {
+//                        sj = aijP.J;
+//                        si = Math.min(aijP.I, bijP.I);
+//                        HB[0][si][sj] = i;
+//                        if (bijP.I > aijP.I) //---- Trace from left
+//                        {
+//                            HB[1][si][sj] = 0;
+//                        } else {
+//                            HB[1][si][sj] = 1;    //---- Trace from right
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        //---- Define horizontal and vertical arrays with the position of the tracing value, -2 means no tracing point. 
+//        double[][] S = new double[m][n - 1];
+//        double[][] H = new double[m - 1][n];
+//        double w;    //---- Tracing value
+//        int c;
+//        //ArrayList _endPointList = new ArrayList();    //---- Contour line end points for insert to border
+//        for (c = 0; c < nc; c++) {
+//            w = contour[c];
+//            for (i = 0; i < m; i++) {
+//                for (j = 0; j < n; j++) {
+//                    if (j < n - 1) {
+//                        if (S1[i][j] != 0 && S1[i][j + 1] != 0) {
+//                            if ((S0[i][j] - w) * (S0[i][j + 1] - w) < 0) //---- Has tracing value
+//                            {
+//                                S[i][j] = (w - S0[i][j]) / (S0[i][j + 1] - S0[i][j]);
+//                            } else {
+//                                S[i][j] = -2;
+//                            }
+//                        } else {
+//                            S[i][j] = -2;
+//                        }
+//                    }
+//                    if (i < m - 1) {
+//                        if (S1[i][j] != 0 && S1[i + 1][j] != 0) {
+//                            if ((S0[i][j] - w) * (S0[i + 1][j] - w) < 0) //---- Has tracing value
+//                            {
+//                                H[i][j] = (w - S0[i][j]) / (S0[i + 1][j] - S0[i][j]);
+//                            } else {
+//                                H[i][j] = -2;
+//                            }
+//                        } else {
+//                            H[i][j] = -2;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            cLineList = isoline_UndefData(S0, X, Y, w, nx, ny, S, H, SB, HB, contourLineList.size());
+//            contourLineList.addAll(cLineList);
+//        }
+//
+//        //---- Set border index for close contours
+//        PolyLine aLine;
+//        //List pList = new ArrayList();
+//        PointD aPoint;
+//        for (i = 0; i < borders.size(); i++) {
+//            aBorder = borders.get(i);
+//            aBLine = aBorder.LineList.get(0);
+//            for (j = 0; j < contourLineList.size(); j++) {
+//                aLine = contourLineList.get(j);
+//                if (aLine.Type.equals("Close")) {
+//                    aPoint = aLine.PointList.get(0);
+//                    if (pointInPolygon(aBLine.pointList, aPoint)) {
+//                        aLine.BorderIdx = i;
+//                    }
+//                }
+//                contourLineList.remove(j);
+//                contourLineList.add(j, aLine);
+//            }
+//        }
+//
+//        return contourLineList;
+//    }
 
     /**
      * Create contour lines
@@ -1819,6 +1993,194 @@ public class Contour {
     }
 
     private static boolean traceIsoline_UndefData(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
+            double[] Y, double a2x, int[] ij3, double[] a3xy, boolean[] IsS) {
+        boolean canTrace = true;
+        double a3x = 0, a3y = 0;
+        int i3 = 0, j3 = 0;
+        boolean isS = true;
+        if (i1 < i2) //---- Trace from bottom
+        {
+            if (H[i2][j2] != -2 && H[i2][j2 + 1] != -2) {
+                if (H[i2][j2] < H[i2][j2 + 1]) {
+                    a3x = X[j2];
+                    a3y = Y[i2] + H[i2][j2] * (Y[i2 + 1] - Y[i2]);
+                    i3 = i2;
+                    j3 = j2;
+                    H[i3][j3] = -2;
+                    isS = false;
+                } else {
+                    a3x = X[j2 + 1];
+                    a3y = Y[i2] + H[i2][j2 + 1] * (Y[i2 + 1] - Y[i2]);
+                    i3 = i2;
+                    j3 = j2 + 1;
+                    H[i3][j3] = -2;
+                    isS = false;
+                }
+            } else if (H[i2][j2] != -2 && H[i2][j2 + 1] == -2) {
+                a3x = X[j2];
+                a3y = Y[i2] + H[i2][j2] * (Y[i2 + 1] - Y[i2]);
+                i3 = i2;
+                j3 = j2;
+                H[i3][j3] = -2;
+                isS = false;
+            } else if (H[i2][j2] == -2 && H[i2][j2 + 1] != -2) {
+                a3x = X[j2 + 1];
+                a3y = Y[i2] + H[i2][j2 + 1] * (Y[i2 + 1] - Y[i2]);
+                i3 = i2;
+                j3 = j2 + 1;
+                H[i3][j3] = -2;
+                isS = false;
+            } else if (S[i2 + 1][j2] != -2) {
+                a3x = X[j2] + S[i2 + 1][j2] * (X[j2 + 1] - X[j2]);
+                a3y = Y[i2 + 1];
+                i3 = i2 + 1;
+                j3 = j2;
+                S[i3][j3] = -2;
+                isS = true;
+            } else {
+                canTrace = false;
+            }
+        } else if (j1 < j2) //---- Trace from left
+        {
+            if (S[i2][j2] != -2 && S[i2 + 1][j2] != -2) {
+                if (S[i2][j2] < S[i2 + 1][j2]) {
+                    a3x = X[j2] + S[i2][j2] * (X[j2 + 1] - X[j2]);
+                    a3y = Y[i2];
+                    i3 = i2;
+                    j3 = j2;
+                    S[i3][j3] = -2;
+                    isS = true;
+                } else {
+                    a3x = X[j2] + S[i2 + 1][j2] * (X[j2 + 1] - X[j2]);
+                    a3y = Y[i2 + 1];
+                    i3 = i2 + 1;
+                    j3 = j2;
+                    S[i3][j3] = -2;
+                    isS = true;
+                }
+            } else if (S[i2][j2] != -2 && S[i2 + 1][j2] == -2) {
+                a3x = X[j2] + S[i2][j2] * (X[j2 + 1] - X[j2]);
+                a3y = Y[i2];
+                i3 = i2;
+                j3 = j2;
+                S[i3][j3] = -2;
+                isS = true;
+            } else if (S[i2][j2] == -2 && S[i2 + 1][j2] != -2) {
+                a3x = X[j2] + S[i2 + 1][j2] * (X[j2 + 1] - X[j2]);
+                a3y = Y[i2 + 1];
+                i3 = i2 + 1;
+                j3 = j2;
+                S[i3][j3] = -2;
+                isS = true;
+            } else if (H[i2][j2 + 1] != -2) {
+                a3x = X[j2 + 1];
+                a3y = Y[i2] + H[i2][j2 + 1] * (Y[i2 + 1] - Y[i2]);
+                i3 = i2;
+                j3 = j2 + 1;
+                H[i3][j3] = -2;
+                isS = false;
+            } else {
+                canTrace = false;
+            }
+
+        } else if (X[j2] < a2x) //---- Trace from top
+        {
+            if (H[i2 - 1][j2] != -2 && H[i2 - 1][j2 + 1] != -2) {
+                if (H[i2 - 1][j2] > H[i2 - 1][j2 + 1]) //---- < changed to >
+                {
+                    a3x = X[j2];
+                    a3y = Y[i2 - 1] + H[i2 - 1][j2] * (Y[i2] - Y[i2 - 1]);
+                    i3 = i2 - 1;
+                    j3 = j2;
+                    H[i3][j3] = -2;
+                    isS = false;
+                } else {
+                    a3x = X[j2 + 1];
+                    a3y = Y[i2 - 1] + H[i2 - 1][j2 + 1] * (Y[i2] - Y[i2 - 1]);
+                    i3 = i2 - 1;
+                    j3 = j2 + 1;
+                    H[i3][j3] = -2;
+                    isS = false;
+                }
+            } else if (H[i2 - 1][j2] != -2 && H[i2 - 1][j2 + 1] == -2) {
+                a3x = X[j2];
+                a3y = Y[i2 - 1] + H[i2 - 1][j2] * (Y[i2] - Y[i2 - 1]);
+                i3 = i2 - 1;
+                j3 = j2;
+                H[i3][j3] = -2;
+                isS = false;
+            } else if (H[i2 - 1][j2] == -2 && H[i2 - 1][j2 + 1] != -2) {
+                a3x = X[j2 + 1];
+                a3y = Y[i2 - 1] + H[i2 - 1][j2 + 1] * (Y[i2] - Y[i2 - 1]);
+                i3 = i2 - 1;
+                j3 = j2 + 1;
+                H[i3][j3] = -2;
+                isS = false;
+            } else if (S[i2 - 1][j2] != -2) {
+                a3x = X[j2] + S[i2 - 1][j2] * (X[j2 + 1] - X[j2]);
+                a3y = Y[i2 - 1];
+                i3 = i2 - 1;
+                j3 = j2;
+                S[i3][j3] = -2;
+                isS = true;
+            } else {
+                canTrace = false;
+            }
+        } else //---- Trace from right
+        {
+            if (S[i2 + 1][j2 - 1] != -2 && S[i2][j2 - 1] != -2) {
+                if (S[i2 + 1][j2 - 1] > S[i2][j2 - 1]) //---- < changed to >
+                {
+                    a3x = X[j2 - 1] + S[i2 + 1][j2 - 1] * (X[j2] - X[j2 - 1]);
+                    a3y = Y[i2 + 1];
+                    i3 = i2 + 1;
+                    j3 = j2 - 1;
+                    S[i3][j3] = -2;
+                    isS = true;
+                } else {
+                    a3x = X[j2 - 1] + S[i2][j2 - 1] * (X[j2] - X[j2 - 1]);
+                    a3y = Y[i2];
+                    i3 = i2;
+                    j3 = j2 - 1;
+                    S[i3][j3] = -2;
+                    isS = true;
+                }
+            } else if (S[i2 + 1][j2 - 1] != -2 && S[i2][j2 - 1] == -2) {
+                a3x = X[j2 - 1] + S[i2 + 1][j2 - 1] * (X[j2] - X[j2 - 1]);
+                a3y = Y[i2 + 1];
+                i3 = i2 + 1;
+                j3 = j2 - 1;
+                S[i3][j3] = -2;
+                isS = true;
+            } else if (S[i2 + 1][j2 - 1] == -2 && S[i2][j2 - 1] != -2) {
+                a3x = X[j2 - 1] + S[i2][j2 - 1] * (X[j2] - X[j2 - 1]);
+                a3y = Y[i2];
+                i3 = i2;
+                j3 = j2 - 1;
+                S[i3][j3] = -2;
+                isS = true;
+            } else if (H[i2][j2 - 1] != -2) {
+                a3x = X[j2 - 1];
+                a3y = Y[i2] + H[i2][j2 - 1] * (Y[i2 + 1] - Y[i2]);
+                i3 = i2;
+                j3 = j2 - 1;
+                H[i3][j3] = -2;
+                isS = false;
+            } else {
+                canTrace = false;
+            }
+        }
+
+        ij3[0] = i3;
+        ij3[1] = j3;
+        a3xy[0] = a3x;
+        a3xy[1] = a3y;
+        IsS[0] = isS;
+
+        return canTrace;
+    }
+    
+    private static boolean traceIsoline_UndefData_bak(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
             double[] Y, double nx, double ny, double a2x, int[] ij3, double[] a3xy, boolean[] IsS) {
         boolean canTrace = true;
         double a3x = 0, a3y = 0;
@@ -2007,8 +2369,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_UndefData(double[][] S0, double[] X, double[] Y,
-            double W, double nx, double ny,
-            double[][] S, double[][] H, int[][][] SB, int[][][] HB, int lineNum) {
+            double W, double[][] S, double[][] H, int[][][] SB, int[][][] HB, int lineNum) {
 
         List<PolyLine> cLineList = new ArrayList<PolyLine>();
         int m, n, i, j;
@@ -2032,7 +2393,7 @@ public class Contour {
                             pList = new ArrayList<PointD>();
                             i2 = i;
                             j2 = j;
-                            a2x = X[j2] + S[i2][j2] * nx;    //---- x of first point
+                            a2x = X[j2] + S[i2][j2] * (X[j2 + 1] - X[j2]);    //---- x of first point
                             a2y = Y[i2];                   //---- y of first point
                             if (SB[1][i][j] == 0) //---- Bottom border
                             {
@@ -2062,7 +2423,7 @@ public class Contour {
                                 int[] ij3 = {i3, j3};
                                 double[] a3xy = {a3x, a3y};
                                 boolean[] IsS = {isS};
-                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, a2x, ij3, a3xy, IsS)) {
                                     i3 = ij3[0];
                                     j3 = ij3[1];
                                     a3x = a3xy[0];
@@ -2129,7 +2490,7 @@ public class Contour {
                             i2 = i;
                             j2 = j;
                             a2x = X[j2];
-                            a2y = Y[i2] + H[i2][j2] * ny;
+                            a2y = Y[i2] + H[i2][j2] * (Y[i2 + 1] - Y[i2]);
                             i1 = i2;
                             if (HB[1][i][j] == 0) {
                                 j1 = -1;
@@ -2157,7 +2518,7 @@ public class Contour {
                                 int[] ij3 = {i3, j3};
                                 double[] a3xy = {a3x, a3y};
                                 boolean[] IsS = {isS};
-                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, a2x, ij3, a3xy, IsS)) {
                                     i3 = ij3[0];
                                     j3 = ij3[1];
                                     a3x = a3xy[0];
@@ -2246,7 +2607,7 @@ public class Contour {
                     i2 = i;
                     j2 = j;
                     a2x = X[j2];
-                    a2y = Y[i] + H[i][j2] * ny;
+                    a2y = Y[i] + H[i][j2] * (Y[i + 1] - Y[i]);
                     j1 = -1;
                     i1 = i2;
                     sx = a2x;
@@ -2262,7 +2623,7 @@ public class Contour {
                         int[] ij3 = new int[2];
                         double[] a3xy = new double[2];
                         boolean[] IsS = new boolean[1];
-                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, a2x, ij3, a3xy, IsS)) {
                             i3 = ij3[0];
                             j3 = ij3[1];
                             a3x = a3xy[0];
@@ -2307,7 +2668,7 @@ public class Contour {
                     List<PointD> pointList = new ArrayList<PointD>();
                     i2 = i;
                     j2 = j;
-                    a2x = X[j2] + S[i][j] * nx;
+                    a2x = X[j2] + S[i][j] * (X[j2 + 1] - X[j2]);
                     a2y = Y[i];
                     j1 = j2;
                     i1 = -1;
@@ -2324,7 +2685,7 @@ public class Contour {
                         int[] ij3 = new int[2];
                         double[] a3xy = new double[2];
                         boolean[] IsS = new boolean[1];
-                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, a2x, ij3, a3xy, IsS)) {
                             i3 = ij3[0];
                             j3 = ij3[1];
                             a3x = a3xy[0];
@@ -2361,6 +2722,362 @@ public class Contour {
 
         return cLineList;
     }
+    
+//    private static List<PolyLine> isoline_UndefData_bak(double[][] S0, double[] X, double[] Y,
+//            double W, double nx, double ny,
+//            double[][] S, double[][] H, int[][][] SB, int[][][] HB, int lineNum) {
+//
+//        List<PolyLine> cLineList = new ArrayList<PolyLine>();
+//        int m, n, i, j;
+//        m = S0.length;
+//        n = S0[0].length;
+//
+//        int i1, i2, j1, j2, i3 = 0, j3 = 0;
+//        double a2x, a2y, a3x = 0, a3y = 0, sx, sy;
+//        PointD aPoint;
+//        PolyLine aLine;
+//        List<PointD> pList;
+//        boolean isS = true;
+//        EndPoint aEndPoint = new EndPoint();
+//        //---- Tracing from border
+//        for (i = 0; i < m; i++) {
+//            for (j = 0; j < n; j++) {
+//                if (j < n - 1) {
+//                    if (SB[0][i][j] > -1) //---- Border
+//                    {
+//                        if (S[i][j] != -2) {
+//                            pList = new ArrayList<PointD>();
+//                            i2 = i;
+//                            j2 = j;
+//                            a2x = X[j2] + S[i2][j2] * nx;    //---- x of first point
+//                            a2y = Y[i2];                   //---- y of first point
+//                            if (SB[1][i][j] == 0) //---- Bottom border
+//                            {
+//                                i1 = -1;
+//                                aEndPoint.sPoint.X = X[j + 1];
+//                                aEndPoint.sPoint.Y = Y[i];
+//                            } else {
+//                                i1 = i2;
+//                                aEndPoint.sPoint.X = X[j];
+//                                aEndPoint.sPoint.Y = Y[i];
+//                            }
+//                            j1 = j2;
+//                            aPoint = new PointD();
+//                            aPoint.X = a2x;
+//                            aPoint.Y = a2y;
+//                            pList.add(aPoint);
+//
+//                            aEndPoint.Index = lineNum + cLineList.size();
+//                            aEndPoint.Point = aPoint;
+//                            aEndPoint.BorderIdx = SB[0][i][j];
+//                            _endPointList.add(aEndPoint);
+//
+//                            aLine = new PolyLine();
+//                            aLine.Type = "Border";
+//                            aLine.BorderIdx = SB[0][i][j];
+//                            while (true) {
+//                                int[] ij3 = {i3, j3};
+//                                double[] a3xy = {a3x, a3y};
+//                                boolean[] IsS = {isS};
+//                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+//                                    i3 = ij3[0];
+//                                    j3 = ij3[1];
+//                                    a3x = a3xy[0];
+//                                    a3y = a3xy[1];
+//                                    isS = IsS[0];
+//                                    aPoint = new PointD();
+//                                    aPoint.X = a3x;
+//                                    aPoint.Y = a3y;
+//                                    pList.add(aPoint);
+//                                    if (isS) {
+//                                        if (SB[0][i3][j3] > -1) {
+//                                            if (SB[1][i3][j3] == 0) {
+//                                                aEndPoint.sPoint.X = X[j3 + 1];
+//                                                aEndPoint.sPoint.Y = Y[i3];
+//                                            } else {
+//                                                aEndPoint.sPoint.X = X[j3];
+//                                                aEndPoint.sPoint.Y = Y[i3];
+//                                            }
+//                                            break;
+//                                        }
+//                                    } else {
+//                                        if (HB[0][i3][j3] > -1) {
+//                                            if (HB[1][i3][j3] == 0) {
+//                                                aEndPoint.sPoint.X = X[j3];
+//                                                aEndPoint.sPoint.Y = Y[i3];
+//                                            } else {
+//                                                aEndPoint.sPoint.X = X[j3];
+//                                                aEndPoint.sPoint.Y = Y[i3 + 1];
+//                                            }
+//                                            break;
+//                                        }
+//                                    }
+//                                    a2x = a3x;
+//                                    //a2y = a3y;
+//                                    i1 = i2;
+//                                    j1 = j2;
+//                                    i2 = i3;
+//                                    j2 = j3;
+//                                } else {
+//                                    aLine.Type = "Error";
+//                                    break;
+//                                }
+//                            }
+//                            S[i][j] = -2;
+//                            if (pList.size() > 1 && !aLine.Type.equals("Error")) {
+//                                aEndPoint.Point = aPoint;
+//                                _endPointList.add(aEndPoint);
+//
+//                                aLine.Value = W;
+//                                aLine.PointList = pList;
+//                                cLineList.add(aLine);
+//                            } else {
+//                                _endPointList.remove(_endPointList.size() - 1);
+//                            }
+//
+//                        }
+//                    }
+//                }
+//                if (i < m - 1) {
+//                    if (HB[0][i][j] > -1) //---- Border
+//                    {
+//                        if (H[i][j] != -2) {
+//                            pList = new ArrayList<PointD>();
+//                            i2 = i;
+//                            j2 = j;
+//                            a2x = X[j2];
+//                            a2y = Y[i2] + H[i2][j2] * ny;
+//                            i1 = i2;
+//                            if (HB[1][i][j] == 0) {
+//                                j1 = -1;
+//                                aEndPoint.sPoint.X = X[j];
+//                                aEndPoint.sPoint.Y = Y[i];
+//                            } else {
+//                                j1 = j2;
+//                                aEndPoint.sPoint.X = X[j];
+//                                aEndPoint.sPoint.Y = Y[i + 1];
+//                            }
+//                            aPoint = new PointD();
+//                            aPoint.X = a2x;
+//                            aPoint.Y = a2y;
+//                            pList.add(aPoint);
+//
+//                            aEndPoint.Index = lineNum + cLineList.size();
+//                            aEndPoint.Point = aPoint;
+//                            aEndPoint.BorderIdx = HB[0][i][j];
+//                            _endPointList.add(aEndPoint);
+//
+//                            aLine = new PolyLine();
+//                            aLine.Type = "Border";
+//                            aLine.BorderIdx = HB[0][i][j];
+//                            while (true) {
+//                                int[] ij3 = {i3, j3};
+//                                double[] a3xy = {a3x, a3y};
+//                                boolean[] IsS = {isS};
+//                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+//                                    i3 = ij3[0];
+//                                    j3 = ij3[1];
+//                                    a3x = a3xy[0];
+//                                    a3y = a3xy[1];
+//                                    isS = IsS[0];
+//                                    aPoint = new PointD();
+//                                    aPoint.X = a3x;
+//                                    aPoint.Y = a3y;
+//                                    pList.add(aPoint);
+//                                    if (isS) {
+//                                        if (SB[0][i3][j3] > -1) {
+//                                            if (SB[1][i3][j3] == 0) {
+//                                                aEndPoint.sPoint.X = X[j3 + 1];
+//                                                aEndPoint.sPoint.Y = Y[i3];
+//                                            } else {
+//                                                aEndPoint.sPoint.X = X[j3];
+//                                                aEndPoint.sPoint.Y = Y[i3];
+//                                            }
+//                                            break;
+//                                        }
+//                                    } else {
+//                                        if (HB[0][i3][j3] > -1) {
+//                                            if (HB[1][i3][j3] == 0) {
+//                                                aEndPoint.sPoint.X = X[j3];
+//                                                aEndPoint.sPoint.Y = Y[i3];
+//                                            } else {
+//                                                aEndPoint.sPoint.X = X[j3];
+//                                                aEndPoint.sPoint.Y = Y[i3 + 1];
+//                                            }
+//                                            break;
+//                                        }
+//                                    }
+//                                    a2x = a3x;
+//                                    //a2y = a3y;
+//                                    i1 = i2;
+//                                    j1 = j2;
+//                                    i2 = i3;
+//                                    j2 = j3;
+//                                } else {
+//                                    aLine.Type = "Error";
+//                                    break;
+//                                }
+//                            }
+//                            H[i][j] = -2;
+//                            if (pList.size() > 1 && !aLine.Type.equals("Error")) {
+//                                aEndPoint.Point = aPoint;
+//                                _endPointList.add(aEndPoint);
+//
+//                                aLine.Value = W;
+//                                aLine.PointList = pList;
+//                                cLineList.add(aLine);
+//                            } else {
+//                                _endPointList.remove(_endPointList.size() - 1);
+//                            }
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        //---- Clear border points
+//        for (j = 0; j < n - 1; j++) {
+//            if (S[0][j] != -2) {
+//                S[0][j] = -2;
+//            }
+//            if (S[m - 1][j] != -2) {
+//                S[m - 1][j] = -2;
+//            }
+//        }
+//
+//        for (i = 0; i < m - 1; i++) {
+//            if (H[i][0] != -2) {
+//                H[i][0] = -2;
+//            }
+//            if (H[i][n - 1] != -2) {
+//                H[i][n - 1] = -2;
+//            }
+//        }
+//
+//        //---- Tracing close lines
+//        for (i = 1; i < m - 2; i++) {
+//            for (j = 1; j < n - 1; j++) {
+//                if (H[i][j] != -2) {
+//                    List<PointD> pointList = new ArrayList<PointD>();
+//                    i2 = i;
+//                    j2 = j;
+//                    a2x = X[j2];
+//                    a2y = Y[i] + H[i][j2] * ny;
+//                    j1 = -1;
+//                    i1 = i2;
+//                    sx = a2x;
+//                    sy = a2y;
+//                    aPoint = new PointD();
+//                    aPoint.X = a2x;
+//                    aPoint.Y = a2y;
+//                    pointList.add(aPoint);
+//                    aLine = new PolyLine();
+//                    aLine.Type = "Close";
+//
+//                    while (true) {
+//                        int[] ij3 = new int[2];
+//                        double[] a3xy = new double[2];
+//                        boolean[] IsS = new boolean[1];
+//                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+//                            i3 = ij3[0];
+//                            j3 = ij3[1];
+//                            a3x = a3xy[0];
+//                            a3y = a3xy[1];
+//                            //isS = IsS[0];
+//                            aPoint = new PointD();
+//                            aPoint.X = a3x;
+//                            aPoint.Y = a3y;
+//                            pointList.add(aPoint);
+//                            if (Math.abs(a3y - sy) < 0.000001 && Math.abs(a3x - sx) < 0.000001) {
+//                                break;
+//                            }
+//
+//                            a2x = a3x;
+//                            //a2y = a3y;
+//                            i1 = i2;
+//                            j1 = j2;
+//                            i2 = i3;
+//                            j2 = j3;
+//                            //If X[j2] < a2x && i2 = 0 )
+//                            //    aLine.type = "Error"
+//                            //    Exit Do
+//                            //End If
+//                        } else {
+//                            aLine.Type = "Error";
+//                            break;
+//                        }
+//                    }
+//                    H[i][j] = -2;
+//                    if (pointList.size() > 1 && !aLine.Type.equals("Error")) {
+//                        aLine.Value = W;
+//                        aLine.PointList = pointList;
+//                        cLineList.add(aLine);
+//                    }
+//                }
+//            }
+//        }
+//
+//        for (i = 1; i < m - 1; i++) {
+//            for (j = 1; j < n - 2; j++) {
+//                if (S[i][j] != -2) {
+//                    List<PointD> pointList = new ArrayList<PointD>();
+//                    i2 = i;
+//                    j2 = j;
+//                    a2x = X[j2] + S[i][j] * nx;
+//                    a2y = Y[i];
+//                    j1 = j2;
+//                    i1 = -1;
+//                    sx = a2x;
+//                    sy = a2y;
+//                    aPoint = new PointD();
+//                    aPoint.X = a2x;
+//                    aPoint.Y = a2y;
+//                    pointList.add(aPoint);
+//                    aLine = new PolyLine();
+//                    aLine.Type = "Close";
+//
+//                    while (true) {
+//                        int[] ij3 = new int[2];
+//                        double[] a3xy = new double[2];
+//                        boolean[] IsS = new boolean[1];
+//                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
+//                            i3 = ij3[0];
+//                            j3 = ij3[1];
+//                            a3x = a3xy[0];
+//                            a3y = a3xy[1];
+//                            //isS = IsS[0];
+//                            aPoint = new PointD();
+//                            aPoint.X = a3x;
+//                            aPoint.Y = a3y;
+//                            pointList.add(aPoint);
+//                            if (Math.abs(a3y - sy) < 0.000001 && Math.abs(a3x - sx) < 0.000001) {
+//                                break;
+//                            }
+//
+//                            a2x = a3x;
+//                            //a2y = a3y;
+//                            i1 = i2;
+//                            j1 = j2;
+//                            i2 = i3;
+//                            j2 = j3;
+//                        } else {
+//                            aLine.Type = "Error";
+//                            break;
+//                        }
+//                    }
+//                    S[i][j] = -2;
+//                    if (pointList.size() > 1 && !aLine.Type.equals("Error")) {
+//                        aLine.Value = W;
+//                        aLine.PointList = pointList;
+//                        cLineList.add(aLine);
+//                    }
+//                }
+//            }
+//        }
+//
+//        return cLineList;
+//    }
 
     private static Object[] traceIsoline(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
             double[] Y, double nx, double ny, double a2x) {
