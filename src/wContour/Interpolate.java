@@ -101,7 +101,7 @@ public class Interpolate {
                 SV = 0;
                 SW = 0;
                 for (p = 0; p < points; p++) {
-                    if (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2) == 0) {
+                    if (X[j] == SCoords[p][0] && Y[i] == SCoords[p][1]) {
                         GCoords[i][j] = SCoords[p][2];
                         break;
                     } else {
@@ -191,7 +191,7 @@ public class Interpolate {
                         AllWeights[p] = -1;
                         continue;
                     }
-                    if (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2) == 0) {
+                    if (X[j] == SCoords[p][0] && Y[i] == SCoords[p][1]) {
                         GCoords[i][j] = SCoords[p][2];
                         break;
                     } else {
@@ -287,7 +287,7 @@ public class Interpolate {
                         continue;
                     }
 
-                    if (Math.pow(X[j] - SCoords[p][0], 2) + Math.pow(Y[i] - SCoords[p][1], 2) == 0) {
+                    if (X[j] == SCoords[p][0] && Y[i] == SCoords[p][1]) {
                         GCoords[i][j] = SCoords[p][2];
                         ifPointGrid = true;
                         break;
