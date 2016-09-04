@@ -4032,7 +4032,7 @@ public class Contour {
             timesArray[i] = 0;
         }
 
-        int pIdx, pNum, vNum;
+        int pIdx, pNum, vNum, vvNum;
         double aValue = 0, bValue = 0, cValue = 0;
         List<BorderPoint> lineBorderList = new ArrayList<BorderPoint>();
 
@@ -4055,6 +4055,7 @@ public class Contour {
                 }
 
                 vNum = 0;
+                vvNum = 0;
                 while (true) {
                     bP = borderList.get(pIdx);
                     if (bP.Id == -1) //---- Not endpoint of contour
@@ -4064,6 +4065,7 @@ public class Contour {
                         }
 
                         cValue = bP.Value;
+                        vvNum += 1;
                         aPList.add(bP.Point);
                         timesArray[pIdx] += +1;
                     } else //---- endpoint of contour
@@ -4078,7 +4080,7 @@ public class Contour {
                             aValue = aLine.Value;
                             bValue = aLine.Value;
                             vNum += 1;
-                        } else if (aValue == bValue) {
+                        } else {
                             if (aLine.Value > aValue) {
                                 bValue = aLine.Value;
                             } else if (aLine.Value < aValue) {
@@ -4123,9 +4125,11 @@ public class Contour {
                             aPolygon.OutLine.Value = aValue;
                             aPolygon.IsHighCenter = true;
                             aPolygon.HoleLines = new ArrayList<PolyLine>();
-                            if (cValue < aValue) {
-                                aPolygon.IsHighCenter = false;
-                                aPolygon.HighValue = aValue;
+                            if (vvNum > 0) {
+                                if (cValue < aValue) {
+                                    aPolygon.IsHighCenter = false;
+                                    aPolygon.HighValue = aValue;
+                                }
                             }
                             aPolygon.OutLine.Type = "Border";
                             aPolygonList.add(aPolygon);
@@ -4151,6 +4155,7 @@ public class Contour {
                 }
 
                 vNum = 0;
+                vvNum = 0;
                 while (true) {
                     bP = borderList.get(pIdx);
                     if (bP.Id == -1) //---- Not endpoint of contour
@@ -4160,6 +4165,7 @@ public class Contour {
                         }
 
                         cValue = bP.Value;
+                        vvNum += 1;
                         aPList.add(bP.Point);
                         timesArray[pIdx] += +1;
                     } else //---- endpoint of contour
@@ -4174,7 +4180,7 @@ public class Contour {
                             aValue = aLine.Value;
                             bValue = aLine.Value;
                             vNum += 1;
-                        } else if (aValue == bValue) {
+                        } else {
                             if (aLine.Value > aValue) {
                                 bValue = aLine.Value;
                             } else if (aLine.Value < aValue) {
@@ -4219,9 +4225,11 @@ public class Contour {
                             aPolygon.OutLine.Value = aValue;
                             aPolygon.IsHighCenter = true;
                             aPolygon.HoleLines = new ArrayList<PolyLine>();
-                            if (cValue < aValue) {
-                                aPolygon.IsHighCenter = false;
-                                aPolygon.HighValue = aValue;
+                            if (vvNum > 0) {
+                                if (cValue < aValue) {
+                                    aPolygon.IsHighCenter = false;
+                                    aPolygon.HighValue = aValue;
+                                }
                             }
                             aPolygon.OutLine.Type = "Border";
                             aPolygonList.add(aPolygon);
