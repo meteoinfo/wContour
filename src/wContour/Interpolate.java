@@ -589,11 +589,11 @@ public class Interpolate {
         }
 
         //Initial grid values are average of station reports within the first radius
-        double rad;
+        Double rad;
         if (radList.size() > 0) {
             rad = radList.get(0);
         } else {
-            rad = 4;
+            rad = 4.0;
         }
         for (i = 0; i < yNum; i++) {
             y = (double) i;
