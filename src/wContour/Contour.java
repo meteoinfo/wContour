@@ -13,13 +13,21 @@ import java.util.Collections;
  * Contour class - including the functions of contour
  *
  * @author Yaqiang Wang
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.1 $
  */
 public class Contour {
 
     private static List<EndPoint> _endPointList = new ArrayList<EndPoint>();
 
     // <editor-fold desc="Public Contour Methods">
+    /**
+     * Get version
+     * @return Version
+     */
+    public static String getVersion(){
+        return "1.6.1";
+    }
+    
     /**
      * Tracing contour lines from the grid data with undefine data
      *
@@ -4750,14 +4758,16 @@ public class Contour {
             lineBorderList.add(borderList.get(i));
 
             boolean sameBorderIdx = false;    //The two end points of the contour line are on same inner border
+            boolean innerStart;
             //---- Clockwise traceing
             if (timesArray[pIdx] < 2) {
                 bP = borderList.get(pIdx);
+                innerStart = bP.BorderIdx > 0;
                 innerIdx = bP.BInnerIdx;
                 aPList = new ArrayList<PointD>();
                 List<Integer> bIdxList = new ArrayList<Integer>();
                 aPList.add(bP.Point);
-                bIdxList.add(pIdx);
+                //bIdxList.add(pIdx);
                 borderIdx1 = bP.BorderIdx;
                 borderIdx2 = borderIdx1;
                 pIdx += 1;
@@ -4769,6 +4779,7 @@ public class Contour {
                     pIdx = pIdx - (pNums[borderIdx1] - 1);
                 }
                 vNum = 0;
+                boolean isRepeat = false;
                 do {
                     bP = borderList.get(pIdx);
                     //---- Not endpoint of contour
@@ -4783,6 +4794,9 @@ public class Contour {
                         //---- endpoint of contour
                     } else {
                         if (timesArray[pIdx] == 2) {
+                            for (int bidx : bIdxList) {
+                                timesArray[bidx] -= 1;
+                            }
                             break;
                         }
                         timesArray[pIdx] += 1;
@@ -4823,9 +4837,18 @@ public class Contour {
                                     if (bP.BorderIdx > 0 && bP.BorderIdx == bP1.BorderIdx) {
                                         sameBorderIdx = true;
                                     }
+                                    if (innerStart && bP1.BorderIdx == 0) {
+                                        for (int bidx : bIdxList) {
+                                            timesArray[bidx] -= 1;
+                                        }
+                                        isRepeat = true;
+                                    }
                                     break;
                                 }
                             }
+                        }
+                        if (isRepeat) {
+                            break;
                         }
                     }
 
@@ -4901,9 +4924,10 @@ public class Contour {
                 aPList = new ArrayList<PointD>();
                 List<Integer> bIdxList = new ArrayList<Integer>();
                 bP = borderList.get(pIdx);
+                innerStart = bP.BorderIdx > 0;
                 innerIdx = bP.BInnerIdx;
                 aPList.add(bP.Point);
-                bIdxList.add(pIdx);
+                //bIdxList.add(pIdx);
                 borderIdx1 = bP.BorderIdx;
                 borderIdx2 = borderIdx1;
                 pIdx += -1;
@@ -4915,6 +4939,7 @@ public class Contour {
                     pIdx = pIdx + (pNums[borderIdx1] - 1);
                 }
                 vNum = 0;
+                boolean isRepeat = false;
                 do {
                     bP = borderList.get(pIdx);
                     //---- Not endpoint of contour
@@ -4929,6 +4954,9 @@ public class Contour {
                         //---- endpoint of contour
                     } else {
                         if (timesArray[pIdx] == 2) {
+                            for (int bidx : bIdxList) {
+                                timesArray[bidx] -= 1;
+                            }
                             break;
                         }
                         timesArray[pIdx] += 1;
@@ -4967,9 +4995,18 @@ public class Contour {
                                     if (bP.BorderIdx > 0 && bP.BorderIdx == bP1.BorderIdx) {
                                         sameBorderIdx = true;
                                     }
+                                    if (innerStart && bP1.BorderIdx == 0) {
+                                        for (int bidx : bIdxList) {
+                                            timesArray[bidx] -= 1;
+                                        }
+                                        isRepeat = true;
+                                    }
                                     break;
                                 }
                             }
+                        }
+                        if (isRepeat) {
+                            break;
                         }
                     }
 
