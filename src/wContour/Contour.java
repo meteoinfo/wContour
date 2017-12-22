@@ -5112,7 +5112,8 @@ public class Contour {
         if (aPolygonList.isEmpty()) {
             aLine = new PolyLine();
             aLine.Type = "Border";
-            aLine.Value = contour[0];
+            //aLine.Value = contour[0];
+            aLine.Value = borderList.get(0).Value;
             aLine.PointList = new ArrayList<PointD>(aBorder.LineList.get(0).pointList);
 
             if (aLine.PointList.size() > 0) {
