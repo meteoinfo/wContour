@@ -42,7 +42,7 @@ public class Interpolate {
             Y[i] = Ylb + i * YDelt;
         }
 
-        List<double[]> values = new ArrayList<double[]>();
+        List<double[]> values = new ArrayList<>();
         values.add(X);
         values.add(Y);
         return values;
@@ -327,7 +327,7 @@ public class Interpolate {
     }
 
     /**
-     * Interpolation with IDW neighbor method
+     * Interpolation with IDW radius method - using KDTree for fast search
      *
      * @param stData discrete data array
      * @param xGrid grid X array
@@ -339,7 +339,7 @@ public class Interpolate {
      */
     public static double[][] idw_Radius_kdTree(double[][] stData, double[] xGrid, double[] yGrid, 
             int neededPointNum, double radius, double fillValue) {
-        Euclidean<double[]> kdtree = new Euclidean<double[]>(2);
+        Euclidean<double[]> kdtree = new Euclidean<>(2);
         int l = stData.length;
 
         for (int i = 0; i < l; i++) {
@@ -401,8 +401,6 @@ public class Interpolate {
      */
     public static double[][] interpolation_Grid(double[][] GridData, double[] X, double[] Y, double unDefData,
             double[] nX, double[] nY) {
-        //int xNum = X.length;
-        //int yNum = Y.length;
         int nxNum = X.length * 2 - 1;
         int nyNum = Y.length * 2 - 1;
         nX = new double[nxNum];
@@ -430,7 +428,7 @@ public class Interpolate {
                 } else if (i % 2 == 0 && j % 2 != 0) {
                     a = GridData[i / 2][(j - 1) / 2];
                     b = GridData[i / 2][(j - 1) / 2 + 1];
-                    dList = new ArrayList<Double>();
+                    dList = new ArrayList<>();
                     if (a != unDefData) {
                         dList.add(a);
                     }
@@ -448,7 +446,7 @@ public class Interpolate {
                 } else if (i % 2 != 0 && j % 2 == 0) {
                     a = GridData[(i - 1) / 2][j / 2];
                     b = GridData[(i - 1) / 2 + 1][j / 2];
-                    dList = new ArrayList<Double>();
+                    dList = new ArrayList<>();
                     if (a != unDefData) {
                         dList.add(a);
                     }
@@ -468,7 +466,7 @@ public class Interpolate {
                     b = GridData[(i - 1) / 2][(j - 1) / 2 + 1];
                     c = GridData[(i - 1) / 2 + 1][(j - 1) / 2 + 1];
                     d = GridData[(i - 1) / 2 + 1][(j - 1) / 2];
-                    dList = new ArrayList<Double>();
+                    dList = new ArrayList<>();
                     if (a != unDefData) {
                         dList.add(a);
                     }
@@ -512,7 +510,7 @@ public class Interpolate {
      * @return grid data
      */
     public static double[][] cressman(double[][] stationData, double[] X, double[] Y, double unDefData) {
-        List<Double> radList = new ArrayList<Double>();
+        List<Double> radList = new ArrayList<>();
         radList.add(10.0);
         radList.add(7.0);
         radList.add(4.0);
@@ -564,27 +562,15 @@ public class Interpolate {
         }
         total = total / stNum;
 
-        ////Initial grid values are average of station reports
-        //for (i = 0; i < yNum; i++)
-        //{
-        //    for (j = 0; j < xNum; j++)
-        //    {
-        //        gridData[i, j] = sum;
-        //    }
-        //}
         //Initial the arrays
         double HITOP = -999900000000000000000.0;
         double HIBOT = 999900000000000000000.0;
         double[][] TOP = new double[yNum][xNum];
         double[][] BOT = new double[yNum][xNum];
-        //double[,] GRID = new double[yNum, xNum];
-        //int[,] NG = new int[yNum, xNum];
         for (i = 0; i < yNum; i++) {
             for (j = 0; j < xNum; j++) {
                 TOP[i][j] = HITOP;
                 BOT[i][j] = HIBOT;
-                //GRID[i, j] = 0;
-                //NG[i, j] = 0;
             }
         }
 
@@ -633,7 +619,6 @@ public class Interpolate {
                 }
                 if (stNum == 0) {
                     gridData[i][j] = unDefData;
-                    //gridData[i, j] = total;
                 } else {
                     gridData[i][j] = sum / stNum;
                 }
@@ -682,7 +667,7 @@ public class Interpolate {
                         double b = gridData[i1][j2];
                         double c = gridData[i2][j1];
                         double d = gridData[i2][j2];
-                        List<Double> dList = new ArrayList<Double>();
+                        List<Double> dList = new ArrayList<>();
                         if (a != unDefData) {
                             dList.add(a);
                         }
@@ -732,7 +717,7 @@ public class Interpolate {
     }
 
     /**
-     * Cressman analysis
+     * Cressman analysis - KDTree
      *
      * @param stationData station data array - x,y,value
      * @param X x array
@@ -741,7 +726,7 @@ public class Interpolate {
      * @return grid data
      */
     public static double[][] cressman_kdTree(double[][] stationData, double[] X, double[] Y, double unDefData) {
-        List<Double> radList = new ArrayList<Double>();
+        List<Double> radList = new ArrayList<>();
         radList.add(10.0);
         radList.add(7.0);
         radList.add(4.0);
@@ -752,7 +737,7 @@ public class Interpolate {
     }
 
     /**
-     * Cressman analysis
+     * Cressman analysis - KDTree
      *
      * @param stData station data array - x,y,value
      * @param X x array
@@ -794,32 +779,20 @@ public class Interpolate {
         }
         total = total / stNum;
 
-        Euclidean<double[]> kdTree = new Euclidean<double[]>(2);
+        Euclidean<double[]> kdTree = new Euclidean<>(2);
         for(i = 0; i < pNum; i++){
         	kdTree.addPoint(new double[]{stationData[i][0], stationData[i][1]}, stationData[i]);
         }
-        
-        ////Initial grid values are average of station reports
-        //for (i = 0; i < yNum; i++)
-        //{
-        //    for (j = 0; j < xNum; j++)
-        //    {
-        //        gridData[i, j] = sum;
-        //    }
-        //}
+
         //Initial the arrays
         double HITOP = -999900000000000000000.0;
         double HIBOT = 999900000000000000000.0;
         double[][] TOP = new double[yNum][xNum];
         double[][] BOT = new double[yNum][xNum];
-        //double[,] GRID = new double[yNum, xNum];
-        //int[,] NG = new int[yNum, xNum];
         for (i = 0; i < yNum; i++) {
             for (j = 0; j < xNum; j++) {
                 TOP[i][j] = HITOP;
                 BOT[i][j] = HIBOT;
-                //GRID[i, j] = 0;
-                //NG[i, j] = 0;
             }
         }
 
@@ -839,35 +812,7 @@ public class Interpolate {
                 xMin = x - rad;
                 xMax = x + rad;
                 stNum = 0;
-                sum = 0;
-                /*
-                for (int s = 0; s < pNum; s++) {
-                    double val = stationData[s][2];
-                    double sx = stationData[s][0];
-                    double sy = stationData[s][1];
-                    if (sx < 0 || sx >= xNum - 1 || sy < 0 || sy >= yNum - 1) {
-                        continue;
-                    }
-
-                    if (val == unDefData || sx < xMin || sx > xMax || sy < yMin || sy > yMax) {
-                        continue;
-                    }
-
-                    double dis = Math.sqrt(Math.pow(sx - x, 2) + Math.pow(sy - y, 2));
-                    if (dis > rad) {
-                        continue;
-                    }
-
-                    sum += val;
-                    stNum += 1;
-                    if (TOP[i][j] < val) {
-                        TOP[i][j] = val;
-                    }
-                    if (BOT[i][j] > val) {
-                        BOT[i][j] = val;
-                    }
-                }
-                */
+                sum = 0;                
                 ArrayList<double[]> neighbours = kdTree.ballSearch(new double[]{x,y}, rad*rad);
                 for (double[] station: neighbours) {
                     double val = station[2];
@@ -948,7 +893,7 @@ public class Interpolate {
                         double b = gridData[i1][j2];
                         double c = gridData[i2][j1];
                         double d = gridData[i2][j2];
-                        List<Double> dList = new ArrayList<Double>();
+                        List<Double> dList = new ArrayList<>();
                         if (a != unDefData) {
                             dList.add(a);
                         }
@@ -983,68 +928,7 @@ public class Interpolate {
                         sum += eVal * w;
                         wSum += w;
                     }
-                    /*
-                    for (int s = 0; s < pNum; s++) {
-                        double val = stationData[s][2];
-                        double sx = stationData[s][0];
-                        double sy = stationData[s][1];
-                        if (sx < 0 || sx >= xNum - 1 || sy < 0 || sy >= yNum - 1) {
-                            continue;
-                        }
-
-                        if (val == unDefData || sx < xMin || sx > xMax || sy < yMin || sy > yMax) {
-                            continue;
-                        }
-
-                        double dis = Math.sqrt(Math.pow(sx - x, 2) + Math.pow(sy - y, 2));
-                        if (dis > rad) {
-                            continue;
-                        }
-
-                        int i1 = (int) sy;
-                        int j1 = (int) sx;
-                        int i2 = i1 + 1;
-                        int j2 = j1 + 1;
-                        double a = gridData[i1][j1];
-                        double b = gridData[i1][j2];
-                        double c = gridData[i2][j1];
-                        double d = gridData[i2][j2];
-                        List<Double> dList = new ArrayList<Double>();
-                        if (a != unDefData) {
-                            dList.add(a);
-                        }
-                        if (b != unDefData) {
-                            dList.add(b);
-                        }
-                        if (c != unDefData) {
-                            dList.add(c);
-                        }
-                        if (d != unDefData) {
-                            dList.add(d);
-                        }
-
-                        double calVal;
-                        if (dList.isEmpty()) {
-                            continue;
-                        } else if (dList.size() == 1) {
-                            calVal = dList.get(0);
-                        } else if (dList.size() <= 3) {
-                            double aSum = 0;
-                            for (double dd : dList) {
-                                aSum += dd;
-                            }
-                            calVal = aSum / dList.size();
-                        } else {
-                            double x1val = a + (c - a) * (sy - i1);
-                            double x2val = b + (d - b) * (sy - i1);
-                            calVal = x1val + (x2val - x1val) * (sx - j1);
-                        }
-                        double eVal = val - calVal;
-                        double w = (rad * rad - dis * dis) / (rad * rad + dis * dis);
-                        sum += eVal * w;
-                        wSum += w;
-                    }
-                    */
+                    
                     if (wSum < 0.000001) {
                         gridData[i][j] = unDefData;
                     } else {

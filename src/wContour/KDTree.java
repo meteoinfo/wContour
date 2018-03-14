@@ -11,7 +11,7 @@ public abstract class KDTree<T> {
     private final int _dimensions;
     private int _nodes;
     private final Node root;
-    private final ArrayList<Node> nodeList = new ArrayList<Node>();
+    private final ArrayList<Node> nodeList = new ArrayList<>();
 
     //prevent GC from having to collect _bucketSize*dimensions*8 bytes each time a leaf splits
     private double[] mem_recycle;
@@ -77,7 +77,7 @@ public abstract class KDTree<T> {
 
     public ArrayList<SearchResult<T>> nearestNeighbours(double[] searchLocation, int K) {
         IntStack stack = new IntStack();
-        PrioQueue<T> results = new PrioQueue<T>(K, true);
+        PrioQueue<T> results = new PrioQueue<>(K, true);
 
         stack.push(root.index);
 
@@ -95,7 +95,7 @@ public abstract class KDTree<T> {
             }
         }
 
-        ArrayList<SearchResult<T>> returnResults = new ArrayList<SearchResult<T>>(K);
+        ArrayList<SearchResult<T>> returnResults = new ArrayList<>(K);
         double[] priorities = results.priorities;
         Object[] elements = results.elements;
         for (int i = 0; i < K; i++) {//forward (closest first)
@@ -107,7 +107,7 @@ public abstract class KDTree<T> {
 
     public ArrayList<T> ballSearch(double[] searchLocation, double radius) {
         IntStack stack = new IntStack();
-        ArrayList<T> results = new ArrayList<T>();
+        ArrayList<T> results = new ArrayList<>();
 
         stack.push(root.index);
 
@@ -127,7 +127,7 @@ public abstract class KDTree<T> {
 
     public ArrayList<T> rectSearch(double[] mins, double[] maxs) {
         IntStack stack = new IntStack();
-        ArrayList<T> results = new ArrayList<T>();
+        ArrayList<T> results = new ArrayList<>();
 
         stack.push(root.index);
 
@@ -380,7 +380,7 @@ public abstract class KDTree<T> {
 
         //leaf
         ContiguousDoubleArrayList pointLocations;
-        ArrayList<T> pointPayloads = new ArrayList<T>(_bucketSize);
+        ArrayList<T> pointPayloads = new ArrayList<>(_bucketSize);
 
         //stem
         //Node less, more;

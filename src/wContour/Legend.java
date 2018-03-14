@@ -23,7 +23,7 @@ public class Legend {
      * @return legend polygons
      */
     public static List<LPolygon> createLegend(LegendPara aLegendPara) {
-        List<LPolygon> polygonList = new ArrayList<LPolygon>();
+        List<LPolygon> polygonList = new ArrayList<>();
         List<PointD> pList;
         LPolygon aLPolygon;
         PointD aPoint;
@@ -35,7 +35,7 @@ public class Legend {
         aLength = aLegendPara.length / pNum;
         if (aLegendPara.isVertical) {
             for (i = 0; i < pNum; i++) {
-                pList = new ArrayList<PointD>();
+                pList = new ArrayList<>();
                 ifRectangle = true;
                 aLPolygon = new LPolygon();
                 if (i == 0) {
@@ -104,7 +104,7 @@ public class Legend {
             }
         } else {
             for (i = 0; i < pNum; i++) {
-                pList = new ArrayList<PointD>();
+                pList = new ArrayList<>();
                 ifRectangle = true;
                 aLPolygon = new LPolygon();
                 if (i == 0) {
