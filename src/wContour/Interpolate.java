@@ -250,7 +250,7 @@ public class Interpolate {
     }
 
     /**
-     * Interpolation with IDW neighbor method
+     * Interpolation with IDW radius method
      *
      * @param SCoords discrete data array
      * @param X grid X array
