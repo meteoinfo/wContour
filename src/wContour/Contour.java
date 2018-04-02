@@ -22,12 +22,13 @@ public class Contour {
     // <editor-fold desc="Public Contour Methods">
     /**
      * Get version
+     *
      * @return Version
      */
-    public static String getVersion(){
-        return "1.6.1";
+    public static String getVersion() {
+        return "1.6.1R1";
     }
-    
+
     /**
      * Tracing contour lines from the grid data with undefine data
      *
@@ -48,27 +49,6 @@ public class Contour {
         return contourLines;
     }
 
-//    /**
-//     * Tracing contour lines from the grid data with undefine data
-//     *
-//     * @param S0 input grid data
-//     * @param X X coordinate array
-//     * @param Y Y coordinate array
-//     * @param nc number of contour values
-//     * @param contour contour value array
-//     * @param undefData Undefine data
-//     * @param borders borders
-//     * @param S1 data flag array
-//     * @return Contour line list
-//     */
-//    public static List<PolyLine> tracingContourLines(double[][] S0, double[] X, double[] Y,
-//            int nc, double[] contour, double undefData, List<Border> borders, int[][] S1) {
-//        double dx = X[1] - X[0];
-//        double dy = Y[1] - Y[0];
-//        List<PolyLine> contourLines = createContourLines_UndefData(S0, X, Y, nc, contour, dx, dy, S1, undefData, borders);
-//
-//        return contourLines;
-//    }
     /**
      * Tracing contour borders of the grid data with undefined data. Grid data
      * are from left to right and from bottom to top. Grid data array: first
@@ -583,159 +563,6 @@ public class Contour {
         return contourLineList;
     }
 
-//    /**
-//     * Create contour lines from the grid data with undefine data
-//     *
-//     * @param S0 input grid data
-//     * @param X X coordinate array
-//     * @param Y Y coordinate array
-//     * @param nc number of contour values
-//     * @param contour contour value array
-//     * @param nx interval of X coordinate
-//     * @param ny interval of Y coordinate
-//     * @param S1 flag array
-//     * @param undefData undefine data
-//     * @param borders border line list
-//     * @return contour line list
-//     */
-//    private static List<PolyLine> createContourLines_UndefData(double[][] S0, double[] X, double[] Y,
-//            int nc, double[] contour, double nx, double ny, int[][] S1, double undefData, List<Border> borders) {
-//        List<PolyLine> contourLineList = new ArrayList<PolyLine>();
-//        List<PolyLine> cLineList;
-//        int m, n, i, j;
-//        m = S0.length;    //---- Y
-//        n = S0[0].length;    //---- X
-//
-//        //---- Add a small value to aviod the contour point as same as data point
-//        double dShift;
-//        dShift = contour[0] * 0.00001;
-//        if (dShift == 0) {
-//            dShift = 0.00001;
-//        }
-//        for (i = 0; i < m; i++) {
-//            for (j = 0; j < n; j++) {
-//                if (!(doubleEquals(S0[i][j], undefData))) //S0[i, j] = S0[i, j] + (contour[1] - contour[0]) * 0.0001;
-//                {
-//                    S0[i][j] = S0[i][j] + dShift;
-//                }
-//            }
-//        }
-//
-//        //---- Define if H S are border
-//        int[][][] SB = new int[2][m][n - 1], HB = new int[2][m - 1][n];   //---- Which border and trace direction
-//        for (i = 0; i < m; i++) {
-//            for (j = 0; j < n; j++) {
-//                if (j < n - 1) {
-//                    SB[0][i][j] = -1;
-//                    SB[1][i][j] = -1;
-//                }
-//                if (i < m - 1) {
-//                    HB[0][i][j] = -1;
-//                    HB[1][i][j] = -1;
-//                }
-//            }
-//        }
-//        Border aBorder;
-//        BorderLine aBLine;
-//        List<IJPoint> ijPList;
-//        int k, si, sj;
-//        IJPoint aijP, bijP;
-//        for (i = 0; i < borders.size(); i++) {
-//            aBorder = borders.get(i);
-//            for (j = 0; j < aBorder.getLineNum(); j++) {
-//                aBLine = aBorder.LineList.get(j);
-//                ijPList = aBLine.ijPointList;
-//                for (k = 0; k < ijPList.size() - 1; k++) {
-//                    aijP = ijPList.get(k);
-//                    bijP = ijPList.get(k + 1);
-//                    if (aijP.I == bijP.I) {
-//                        si = aijP.I;
-//                        sj = Math.min(aijP.J, bijP.J);
-//                        SB[0][si][sj] = i;
-//                        if (bijP.J > aijP.J) //---- Trace from top
-//                        {
-//                            SB[1][si][sj] = 1;
-//                        } else {
-//                            SB[1][si][sj] = 0;    //----- Trace from bottom
-//                        }
-//                    } else {
-//                        sj = aijP.J;
-//                        si = Math.min(aijP.I, bijP.I);
-//                        HB[0][si][sj] = i;
-//                        if (bijP.I > aijP.I) //---- Trace from left
-//                        {
-//                            HB[1][si][sj] = 0;
-//                        } else {
-//                            HB[1][si][sj] = 1;    //---- Trace from right
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        //---- Define horizontal and vertical arrays with the position of the tracing value, -2 means no tracing point. 
-//        double[][] S = new double[m][n - 1];
-//        double[][] H = new double[m - 1][n];
-//        double w;    //---- Tracing value
-//        int c;
-//        //ArrayList _endPointList = new ArrayList();    //---- Contour line end points for insert to border
-//        for (c = 0; c < nc; c++) {
-//            w = contour[c];
-//            for (i = 0; i < m; i++) {
-//                for (j = 0; j < n; j++) {
-//                    if (j < n - 1) {
-//                        if (S1[i][j] != 0 && S1[i][j + 1] != 0) {
-//                            if ((S0[i][j] - w) * (S0[i][j + 1] - w) < 0) //---- Has tracing value
-//                            {
-//                                S[i][j] = (w - S0[i][j]) / (S0[i][j + 1] - S0[i][j]);
-//                            } else {
-//                                S[i][j] = -2;
-//                            }
-//                        } else {
-//                            S[i][j] = -2;
-//                        }
-//                    }
-//                    if (i < m - 1) {
-//                        if (S1[i][j] != 0 && S1[i + 1][j] != 0) {
-//                            if ((S0[i][j] - w) * (S0[i + 1][j] - w) < 0) //---- Has tracing value
-//                            {
-//                                H[i][j] = (w - S0[i][j]) / (S0[i + 1][j] - S0[i][j]);
-//                            } else {
-//                                H[i][j] = -2;
-//                            }
-//                        } else {
-//                            H[i][j] = -2;
-//                        }
-//                    }
-//                }
-//            }
-//
-//            cLineList = isoline_UndefData(S0, X, Y, w, nx, ny, S, H, SB, HB, contourLineList.size());
-//            contourLineList.addAll(cLineList);
-//        }
-//
-//        //---- Set border index for close contours
-//        PolyLine aLine;
-//        //List pList = new ArrayList();
-//        PointD aPoint;
-//        for (i = 0; i < borders.size(); i++) {
-//            aBorder = borders.get(i);
-//            aBLine = aBorder.LineList.get(0);
-//            for (j = 0; j < contourLineList.size(); j++) {
-//                aLine = contourLineList.get(j);
-//                if (aLine.Type.equals("Close")) {
-//                    aPoint = aLine.PointList.get(0);
-//                    if (pointInPolygon(aBLine.pointList, aPoint)) {
-//                        aLine.BorderIdx = i;
-//                    }
-//                }
-//                contourLineList.remove(j);
-//                contourLineList.add(j, aLine);
-//            }
-//        }
-//
-//        return contourLineList;
-//    }
     /**
      * Create contour lines
      *
@@ -1251,7 +1078,7 @@ public class Contour {
                         newBPList = aBorderList;
                     }
                     //aPolygonList = TracingPolygons(lineList, newBPList, aBound, contour);
-                    aPolygonList = tracingPolygons(lineList, newBPList);
+                    aPolygonList = tracingPolygons(lineList, newBPList, bPList.size() > 0);
                 }
                 aPolygonList = addPolygonHoles(aPolygonList);
             } else //---- The border has holes
@@ -1530,7 +1357,7 @@ public class Contour {
                     //Insert the border points of the contour lines to the border point list of the border
                     newBPList = insertPoint2Border(bPList, aBorderList);
                     //aPolygonList = TracingPolygons(lineList, newBPList, aBound, contour);
-                    aPolygonList = tracingPolygons(lineList, newBPList);
+                    aPolygonList = tracingPolygons(lineList, newBPList, true);
                 }
             } else //---- The border has holes
             {
@@ -2699,361 +2526,6 @@ public class Contour {
         return cLineList;
     }
 
-//    private static List<PolyLine> isoline_UndefData_bak(double[][] S0, double[] X, double[] Y,
-//            double W, double nx, double ny,
-//            double[][] S, double[][] H, int[][][] SB, int[][][] HB, int lineNum) {
-//
-//        List<PolyLine> cLineList = new ArrayList<PolyLine>();
-//        int m, n, i, j;
-//        m = S0.length;
-//        n = S0[0].length;
-//
-//        int i1, i2, j1, j2, i3 = 0, j3 = 0;
-//        double a2x, a2y, a3x = 0, a3y = 0, sx, sy;
-//        PointD aPoint;
-//        PolyLine aLine;
-//        List<PointD> pList;
-//        boolean isS = true;
-//        EndPoint aEndPoint = new EndPoint();
-//        //---- Tracing from border
-//        for (i = 0; i < m; i++) {
-//            for (j = 0; j < n; j++) {
-//                if (j < n - 1) {
-//                    if (SB[0][i][j] > -1) //---- Border
-//                    {
-//                        if (S[i][j] != -2) {
-//                            pList = new ArrayList<PointD>();
-//                            i2 = i;
-//                            j2 = j;
-//                            a2x = X[j2] + S[i2][j2] * nx;    //---- x of first point
-//                            a2y = Y[i2];                   //---- y of first point
-//                            if (SB[1][i][j] == 0) //---- Bottom border
-//                            {
-//                                i1 = -1;
-//                                aEndPoint.sPoint.X = X[j + 1];
-//                                aEndPoint.sPoint.Y = Y[i];
-//                            } else {
-//                                i1 = i2;
-//                                aEndPoint.sPoint.X = X[j];
-//                                aEndPoint.sPoint.Y = Y[i];
-//                            }
-//                            j1 = j2;
-//                            aPoint = new PointD();
-//                            aPoint.X = a2x;
-//                            aPoint.Y = a2y;
-//                            pList.add(aPoint);
-//
-//                            aEndPoint.Index = lineNum + cLineList.size();
-//                            aEndPoint.Point = aPoint;
-//                            aEndPoint.BorderIdx = SB[0][i][j];
-//                            _endPointList.add(aEndPoint);
-//
-//                            aLine = new PolyLine();
-//                            aLine.Type = "Border";
-//                            aLine.BorderIdx = SB[0][i][j];
-//                            while (true) {
-//                                int[] ij3 = {i3, j3};
-//                                double[] a3xy = {a3x, a3y};
-//                                boolean[] IsS = {isS};
-//                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
-//                                    i3 = ij3[0];
-//                                    j3 = ij3[1];
-//                                    a3x = a3xy[0];
-//                                    a3y = a3xy[1];
-//                                    isS = IsS[0];
-//                                    aPoint = new PointD();
-//                                    aPoint.X = a3x;
-//                                    aPoint.Y = a3y;
-//                                    pList.add(aPoint);
-//                                    if (isS) {
-//                                        if (SB[0][i3][j3] > -1) {
-//                                            if (SB[1][i3][j3] == 0) {
-//                                                aEndPoint.sPoint.X = X[j3 + 1];
-//                                                aEndPoint.sPoint.Y = Y[i3];
-//                                            } else {
-//                                                aEndPoint.sPoint.X = X[j3];
-//                                                aEndPoint.sPoint.Y = Y[i3];
-//                                            }
-//                                            break;
-//                                        }
-//                                    } else {
-//                                        if (HB[0][i3][j3] > -1) {
-//                                            if (HB[1][i3][j3] == 0) {
-//                                                aEndPoint.sPoint.X = X[j3];
-//                                                aEndPoint.sPoint.Y = Y[i3];
-//                                            } else {
-//                                                aEndPoint.sPoint.X = X[j3];
-//                                                aEndPoint.sPoint.Y = Y[i3 + 1];
-//                                            }
-//                                            break;
-//                                        }
-//                                    }
-//                                    a2x = a3x;
-//                                    //a2y = a3y;
-//                                    i1 = i2;
-//                                    j1 = j2;
-//                                    i2 = i3;
-//                                    j2 = j3;
-//                                } else {
-//                                    aLine.Type = "Error";
-//                                    break;
-//                                }
-//                            }
-//                            S[i][j] = -2;
-//                            if (pList.size() > 1 && !aLine.Type.equals("Error")) {
-//                                aEndPoint.Point = aPoint;
-//                                _endPointList.add(aEndPoint);
-//
-//                                aLine.Value = W;
-//                                aLine.PointList = pList;
-//                                cLineList.add(aLine);
-//                            } else {
-//                                _endPointList.remove(_endPointList.size() - 1);
-//                            }
-//
-//                        }
-//                    }
-//                }
-//                if (i < m - 1) {
-//                    if (HB[0][i][j] > -1) //---- Border
-//                    {
-//                        if (H[i][j] != -2) {
-//                            pList = new ArrayList<PointD>();
-//                            i2 = i;
-//                            j2 = j;
-//                            a2x = X[j2];
-//                            a2y = Y[i2] + H[i2][j2] * ny;
-//                            i1 = i2;
-//                            if (HB[1][i][j] == 0) {
-//                                j1 = -1;
-//                                aEndPoint.sPoint.X = X[j];
-//                                aEndPoint.sPoint.Y = Y[i];
-//                            } else {
-//                                j1 = j2;
-//                                aEndPoint.sPoint.X = X[j];
-//                                aEndPoint.sPoint.Y = Y[i + 1];
-//                            }
-//                            aPoint = new PointD();
-//                            aPoint.X = a2x;
-//                            aPoint.Y = a2y;
-//                            pList.add(aPoint);
-//
-//                            aEndPoint.Index = lineNum + cLineList.size();
-//                            aEndPoint.Point = aPoint;
-//                            aEndPoint.BorderIdx = HB[0][i][j];
-//                            _endPointList.add(aEndPoint);
-//
-//                            aLine = new PolyLine();
-//                            aLine.Type = "Border";
-//                            aLine.BorderIdx = HB[0][i][j];
-//                            while (true) {
-//                                int[] ij3 = {i3, j3};
-//                                double[] a3xy = {a3x, a3y};
-//                                boolean[] IsS = {isS};
-//                                if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
-//                                    i3 = ij3[0];
-//                                    j3 = ij3[1];
-//                                    a3x = a3xy[0];
-//                                    a3y = a3xy[1];
-//                                    isS = IsS[0];
-//                                    aPoint = new PointD();
-//                                    aPoint.X = a3x;
-//                                    aPoint.Y = a3y;
-//                                    pList.add(aPoint);
-//                                    if (isS) {
-//                                        if (SB[0][i3][j3] > -1) {
-//                                            if (SB[1][i3][j3] == 0) {
-//                                                aEndPoint.sPoint.X = X[j3 + 1];
-//                                                aEndPoint.sPoint.Y = Y[i3];
-//                                            } else {
-//                                                aEndPoint.sPoint.X = X[j3];
-//                                                aEndPoint.sPoint.Y = Y[i3];
-//                                            }
-//                                            break;
-//                                        }
-//                                    } else {
-//                                        if (HB[0][i3][j3] > -1) {
-//                                            if (HB[1][i3][j3] == 0) {
-//                                                aEndPoint.sPoint.X = X[j3];
-//                                                aEndPoint.sPoint.Y = Y[i3];
-//                                            } else {
-//                                                aEndPoint.sPoint.X = X[j3];
-//                                                aEndPoint.sPoint.Y = Y[i3 + 1];
-//                                            }
-//                                            break;
-//                                        }
-//                                    }
-//                                    a2x = a3x;
-//                                    //a2y = a3y;
-//                                    i1 = i2;
-//                                    j1 = j2;
-//                                    i2 = i3;
-//                                    j2 = j3;
-//                                } else {
-//                                    aLine.Type = "Error";
-//                                    break;
-//                                }
-//                            }
-//                            H[i][j] = -2;
-//                            if (pList.size() > 1 && !aLine.Type.equals("Error")) {
-//                                aEndPoint.Point = aPoint;
-//                                _endPointList.add(aEndPoint);
-//
-//                                aLine.Value = W;
-//                                aLine.PointList = pList;
-//                                cLineList.add(aLine);
-//                            } else {
-//                                _endPointList.remove(_endPointList.size() - 1);
-//                            }
-//
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        //---- Clear border points
-//        for (j = 0; j < n - 1; j++) {
-//            if (S[0][j] != -2) {
-//                S[0][j] = -2;
-//            }
-//            if (S[m - 1][j] != -2) {
-//                S[m - 1][j] = -2;
-//            }
-//        }
-//
-//        for (i = 0; i < m - 1; i++) {
-//            if (H[i][0] != -2) {
-//                H[i][0] = -2;
-//            }
-//            if (H[i][n - 1] != -2) {
-//                H[i][n - 1] = -2;
-//            }
-//        }
-//
-//        //---- Tracing close lines
-//        for (i = 1; i < m - 2; i++) {
-//            for (j = 1; j < n - 1; j++) {
-//                if (H[i][j] != -2) {
-//                    List<PointD> pointList = new ArrayList<PointD>();
-//                    i2 = i;
-//                    j2 = j;
-//                    a2x = X[j2];
-//                    a2y = Y[i] + H[i][j2] * ny;
-//                    j1 = -1;
-//                    i1 = i2;
-//                    sx = a2x;
-//                    sy = a2y;
-//                    aPoint = new PointD();
-//                    aPoint.X = a2x;
-//                    aPoint.Y = a2y;
-//                    pointList.add(aPoint);
-//                    aLine = new PolyLine();
-//                    aLine.Type = "Close";
-//
-//                    while (true) {
-//                        int[] ij3 = new int[2];
-//                        double[] a3xy = new double[2];
-//                        boolean[] IsS = new boolean[1];
-//                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
-//                            i3 = ij3[0];
-//                            j3 = ij3[1];
-//                            a3x = a3xy[0];
-//                            a3y = a3xy[1];
-//                            //isS = IsS[0];
-//                            aPoint = new PointD();
-//                            aPoint.X = a3x;
-//                            aPoint.Y = a3y;
-//                            pointList.add(aPoint);
-//                            if (Math.abs(a3y - sy) < 0.000001 && Math.abs(a3x - sx) < 0.000001) {
-//                                break;
-//                            }
-//
-//                            a2x = a3x;
-//                            //a2y = a3y;
-//                            i1 = i2;
-//                            j1 = j2;
-//                            i2 = i3;
-//                            j2 = j3;
-//                            //If X[j2] < a2x && i2 = 0 )
-//                            //    aLine.type = "Error"
-//                            //    Exit Do
-//                            //End If
-//                        } else {
-//                            aLine.Type = "Error";
-//                            break;
-//                        }
-//                    }
-//                    H[i][j] = -2;
-//                    if (pointList.size() > 1 && !aLine.Type.equals("Error")) {
-//                        aLine.Value = W;
-//                        aLine.PointList = pointList;
-//                        cLineList.add(aLine);
-//                    }
-//                }
-//            }
-//        }
-//
-//        for (i = 1; i < m - 1; i++) {
-//            for (j = 1; j < n - 2; j++) {
-//                if (S[i][j] != -2) {
-//                    List<PointD> pointList = new ArrayList<PointD>();
-//                    i2 = i;
-//                    j2 = j;
-//                    a2x = X[j2] + S[i][j] * nx;
-//                    a2y = Y[i];
-//                    j1 = j2;
-//                    i1 = -1;
-//                    sx = a2x;
-//                    sy = a2y;
-//                    aPoint = new PointD();
-//                    aPoint.X = a2x;
-//                    aPoint.Y = a2y;
-//                    pointList.add(aPoint);
-//                    aLine = new PolyLine();
-//                    aLine.Type = "Close";
-//
-//                    while (true) {
-//                        int[] ij3 = new int[2];
-//                        double[] a3xy = new double[2];
-//                        boolean[] IsS = new boolean[1];
-//                        if (traceIsoline_UndefData(i1, i2, H, S, j1, j2, X, Y, nx, ny, a2x, ij3, a3xy, IsS)) {
-//                            i3 = ij3[0];
-//                            j3 = ij3[1];
-//                            a3x = a3xy[0];
-//                            a3y = a3xy[1];
-//                            //isS = IsS[0];
-//                            aPoint = new PointD();
-//                            aPoint.X = a3x;
-//                            aPoint.Y = a3y;
-//                            pointList.add(aPoint);
-//                            if (Math.abs(a3y - sy) < 0.000001 && Math.abs(a3x - sx) < 0.000001) {
-//                                break;
-//                            }
-//
-//                            a2x = a3x;
-//                            //a2y = a3y;
-//                            i1 = i2;
-//                            j1 = j2;
-//                            i2 = i3;
-//                            j2 = j3;
-//                        } else {
-//                            aLine.Type = "Error";
-//                            break;
-//                        }
-//                    }
-//                    S[i][j] = -2;
-//                    if (pointList.size() > 1 && !aLine.Type.equals("Error")) {
-//                        aLine.Value = W;
-//                        aLine.PointList = pointList;
-//                        cLineList.add(aLine);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return cLineList;
-//    }
     private static Object[] traceIsoline(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
             double[] Y, double nx, double ny, double a2x) {
         int i3, j3;
@@ -3853,7 +3325,7 @@ public class Contour {
                     for (i = 0; i < aPolygonList.size(); i++) {
                         aPolygon = aPolygonList.get(i);
                         tf = !tf;
-                        aPolygon.IsHighCenter = tf;                          
+                        aPolygon.IsHighCenter = tf;
                     }
                 }
             } else {
@@ -3989,7 +3461,7 @@ public class Contour {
         return aPolygonList;
     }
 
-    private static List<Polygon> tracingPolygons(List<PolyLine> LineList, List<BorderPoint> borderList) {
+    private static List<Polygon> tracingPolygons(List<PolyLine> LineList, List<BorderPoint> borderList, boolean hasBorder) {
         if (LineList.isEmpty()) {
             return new ArrayList<>();
         }
@@ -4005,219 +3477,221 @@ public class Contour {
         aLineList = new ArrayList<>(LineList);
 
         //---- Tracing border polygon
-        List<PointD> aPList;
-        List<PointD> newPList;
-        BorderPoint bP;
-        int[] timesArray = new int[borderList.size() - 1];
-        for (i = 0; i < timesArray.length; i++) {
-            timesArray[i] = 0;
-        }
-
-        int pIdx, pNum, vNum, vvNum;
-        double aValue = 0, bValue = 0, cValue = 0;
-        List<BorderPoint> lineBorderList = new ArrayList<>();
-
-        pNum = borderList.size() - 1;
-        for (i = 0; i < pNum; i++) {
-            if ((borderList.get(i)).Id == -1) {
-                continue;
+        if (hasBorder) {
+            List<PointD> aPList;
+            List<PointD> newPList;
+            BorderPoint bP;
+            int[] timesArray = new int[borderList.size() - 1];
+            for (i = 0; i < timesArray.length; i++) {
+                timesArray[i] = 0;
             }
 
-            pIdx = i;
-            aPList = new ArrayList<>();
-            lineBorderList.add(borderList.get(i));
+            int pIdx, pNum, vNum, vvNum;
+            double aValue = 0, bValue = 0, cValue = 0;
+            List<BorderPoint> lineBorderList = new ArrayList<>();
 
-            //---- Clockwise traceing
-            if (timesArray[pIdx] < 2) {
-                aPList.add((borderList.get(pIdx)).Point);
-                pIdx += 1;
-                if (pIdx == pNum) {
-                    pIdx = 0;
+            pNum = borderList.size() - 1;
+            for (i = 0; i < pNum; i++) {
+                if ((borderList.get(i)).Id == -1) {
+                    continue;
                 }
 
-                vNum = 0;
-                vvNum = 0;
-                while (true) {
-                    bP = borderList.get(pIdx);
-                    if (bP.Id == -1) //---- Not endpoint of contour
-                    {
-                        if (timesArray[pIdx] == 1) {
-                            break;
-                        }
+                pIdx = i;
+                aPList = new ArrayList<>();
+                lineBorderList.add(borderList.get(i));
 
-                        cValue = bP.Value;
-                        vvNum += 1;
-                        aPList.add(bP.Point);
-                        timesArray[pIdx] += +1;
-                    } else //---- endpoint of contour
-                    {
-                        if (timesArray[pIdx] == 2) {
-                            break;
-                        }
-
-                        timesArray[pIdx] += +1;
-                        aLine = aLineList.get(bP.Id);
-                        if (vNum == 0) {
-                            aValue = aLine.Value;
-                            bValue = aLine.Value;
-                            vNum += 1;
-                        } else {
-                            if (aLine.Value > aValue) {
-                                bValue = aLine.Value;
-                            } else if (aLine.Value < aValue) {
-                                aValue = aLine.Value;
-                            }
-
-                            vNum += 1;
-                        }
-                        newPList = new ArrayList<>(aLine.PointList);
-                        aPoint = newPList.get(0);
-                        if (!(bP.Point.X == aPoint.X && bP.Point.Y == aPoint.Y)) //---- Start point
-                        {
-                            Collections.reverse(newPList);
-                        }
-
-                        aPList.addAll(newPList);
-                        for (j = 0; j < borderList.size() - 1; j++) {
-                            if (j != pIdx) {
-                                if ((borderList.get(j)).Id == bP.Id) {
-                                    pIdx = j;
-                                    timesArray[pIdx] += +1;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (pIdx == i) {
-                        if (aPList.size() > 0) {
-                            aPolygon = new Polygon();
-                            aPolygon.IsBorder = true;
-                            aPolygon.LowValue = aValue;
-                            aPolygon.HighValue = bValue;
-                            aBound = new Extent();
-                            aPolygon.Area = getExtentAndArea(aPList, aBound);
-                            aPolygon.IsClockWise = true;
-                            aPolygon.StartPointIdx = lineBorderList.size() - 1;
-                            aPolygon.Extent = aBound;
-                            aPolygon.OutLine.PointList = aPList;
-                            aPolygon.OutLine.Value = aValue;
-                            aPolygon.IsHighCenter = true;
-                            aPolygon.HoleLines = new ArrayList<>();
-                            if (vvNum > 0) {
-                                if (cValue < aValue) {
-                                    aPolygon.IsHighCenter = false;
-                                    aPolygon.HighValue = aValue;
-                                }
-                            }
-                            aPolygon.OutLine.Type = "Border";
-                            aPolygonList.add(aPolygon);
-                        }
-                        break;
-                    }
+                //---- Clockwise traceing
+                if (timesArray[pIdx] < 2) {
+                    aPList.add((borderList.get(pIdx)).Point);
                     pIdx += 1;
                     if (pIdx == pNum) {
                         pIdx = 0;
                     }
 
-                }
-            }
-
-            //---- Anticlockwise traceing
-            pIdx = i;
-            if (timesArray[pIdx] < 2) {
-                aPList = new ArrayList<>();
-                aPList.add((borderList.get(pIdx)).Point);
-                pIdx += -1;
-                if (pIdx == -1) {
-                    pIdx = pNum - 1;
-                }
-
-                vNum = 0;
-                vvNum = 0;
-                while (true) {
-                    bP = borderList.get(pIdx);
-                    if (bP.Id == -1) //---- Not endpoint of contour
-                    {
-                        if (timesArray[pIdx] == 1) {
-                            break;
-                        }
-
-                        cValue = bP.Value;
-                        vvNum += 1;
-                        aPList.add(bP.Point);
-                        timesArray[pIdx] += +1;
-                    } else //---- endpoint of contour
-                    {
-                        if (timesArray[pIdx] == 2) {
-                            break;
-                        }
-
-                        timesArray[pIdx] += +1;
-                        aLine = aLineList.get(bP.Id);
-                        if (vNum == 0) {
-                            aValue = aLine.Value;
-                            bValue = aLine.Value;
-                            vNum += 1;
-                        } else {
-                            if (aLine.Value > aValue) {
-                                bValue = aLine.Value;
-                            } else if (aLine.Value < aValue) {
-                                aValue = aLine.Value;
-                            }
-
-                            vNum += 1;
-                        }
-                        newPList = new ArrayList<>(aLine.PointList);
-                        aPoint = newPList.get(0);
-                        if (!(bP.Point.X == aPoint.X && bP.Point.Y == aPoint.Y)) //---- Start point
+                    vNum = 0;
+                    vvNum = 0;
+                    while (true) {
+                        bP = borderList.get(pIdx);
+                        if (bP.Id == -1) //---- Not endpoint of contour
                         {
-                            Collections.reverse(newPList);
-                        }
+                            if (timesArray[pIdx] == 1) {
+                                break;
+                            }
 
-                        aPList.addAll(newPList);
-                        for (j = 0; j < borderList.size() - 1; j++) {
-                            if (j != pIdx) {
-                                if ((borderList.get(j)).Id == bP.Id) {
-                                    pIdx = j;
-                                    timesArray[pIdx] += +1;
-                                    break;
+                            cValue = bP.Value;
+                            vvNum += 1;
+                            aPList.add(bP.Point);
+                            timesArray[pIdx] += +1;
+                        } else //---- endpoint of contour
+                        {
+                            if (timesArray[pIdx] == 2) {
+                                break;
+                            }
+
+                            timesArray[pIdx] += +1;
+                            aLine = aLineList.get(bP.Id);
+                            if (vNum == 0) {
+                                aValue = aLine.Value;
+                                bValue = aLine.Value;
+                                vNum += 1;
+                            } else {
+                                if (aLine.Value > aValue) {
+                                    bValue = aLine.Value;
+                                } else if (aLine.Value < aValue) {
+                                    aValue = aLine.Value;
+                                }
+
+                                vNum += 1;
+                            }
+                            newPList = new ArrayList<>(aLine.PointList);
+                            aPoint = newPList.get(0);
+                            if (!(bP.Point.X == aPoint.X && bP.Point.Y == aPoint.Y)) //---- Start point
+                            {
+                                Collections.reverse(newPList);
+                            }
+
+                            aPList.addAll(newPList);
+                            for (j = 0; j < borderList.size() - 1; j++) {
+                                if (j != pIdx) {
+                                    if ((borderList.get(j)).Id == bP.Id) {
+                                        pIdx = j;
+                                        timesArray[pIdx] += +1;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (pIdx == i) {
-                        if (aPList.size() > 0) {
-                            aPolygon = new Polygon();
-                            aPolygon.IsBorder = true;
-                            aPolygon.LowValue = aValue;
-                            aPolygon.HighValue = bValue;
-                            aBound = new Extent();
-                            aPolygon.Area = getExtentAndArea(aPList, aBound);
-                            aPolygon.IsClockWise = false;
-                            aPolygon.StartPointIdx = lineBorderList.size() - 1;
-                            aPolygon.Extent = aBound;
-                            aPolygon.OutLine.PointList = aPList;
-                            aPolygon.OutLine.Value = aValue;
-                            aPolygon.IsHighCenter = true;
-                            aPolygon.HoleLines = new ArrayList<>();
-                            if (vvNum > 0) {
-                                if (cValue < aValue) {
-                                    aPolygon.IsHighCenter = false;
-                                    aPolygon.HighValue = aValue;
+                        if (pIdx == i) {
+                            if (aPList.size() > 0) {
+                                aPolygon = new Polygon();
+                                aPolygon.IsBorder = true;
+                                aPolygon.LowValue = aValue;
+                                aPolygon.HighValue = bValue;
+                                aBound = new Extent();
+                                aPolygon.Area = getExtentAndArea(aPList, aBound);
+                                aPolygon.IsClockWise = true;
+                                aPolygon.StartPointIdx = lineBorderList.size() - 1;
+                                aPolygon.Extent = aBound;
+                                aPolygon.OutLine.PointList = aPList;
+                                aPolygon.OutLine.Value = aValue;
+                                aPolygon.IsHighCenter = true;
+                                aPolygon.HoleLines = new ArrayList<>();
+                                if (vvNum > 0) {
+                                    if (cValue < aValue) {
+                                        aPolygon.IsHighCenter = false;
+                                        aPolygon.HighValue = aValue;
+                                    }
                                 }
+                                aPolygon.OutLine.Type = "Border";
+                                aPolygonList.add(aPolygon);
                             }
-                            aPolygon.OutLine.Type = "Border";
-                            aPolygonList.add(aPolygon);
+                            break;
                         }
-                        break;
+                        pIdx += 1;
+                        if (pIdx == pNum) {
+                            pIdx = 0;
+                        }
+
                     }
+                }
+
+                //---- Anticlockwise traceing
+                pIdx = i;
+                if (timesArray[pIdx] < 2) {
+                    aPList = new ArrayList<>();
+                    aPList.add((borderList.get(pIdx)).Point);
                     pIdx += -1;
                     if (pIdx == -1) {
                         pIdx = pNum - 1;
                     }
 
+                    vNum = 0;
+                    vvNum = 0;
+                    while (true) {
+                        bP = borderList.get(pIdx);
+                        if (bP.Id == -1) //---- Not endpoint of contour
+                        {
+                            if (timesArray[pIdx] == 1) {
+                                break;
+                            }
+
+                            cValue = bP.Value;
+                            vvNum += 1;
+                            aPList.add(bP.Point);
+                            timesArray[pIdx] += +1;
+                        } else //---- endpoint of contour
+                        {
+                            if (timesArray[pIdx] == 2) {
+                                break;
+                            }
+
+                            timesArray[pIdx] += +1;
+                            aLine = aLineList.get(bP.Id);
+                            if (vNum == 0) {
+                                aValue = aLine.Value;
+                                bValue = aLine.Value;
+                                vNum += 1;
+                            } else {
+                                if (aLine.Value > aValue) {
+                                    bValue = aLine.Value;
+                                } else if (aLine.Value < aValue) {
+                                    aValue = aLine.Value;
+                                }
+
+                                vNum += 1;
+                            }
+                            newPList = new ArrayList<>(aLine.PointList);
+                            aPoint = newPList.get(0);
+                            if (!(bP.Point.X == aPoint.X && bP.Point.Y == aPoint.Y)) //---- Start point
+                            {
+                                Collections.reverse(newPList);
+                            }
+
+                            aPList.addAll(newPList);
+                            for (j = 0; j < borderList.size() - 1; j++) {
+                                if (j != pIdx) {
+                                    if ((borderList.get(j)).Id == bP.Id) {
+                                        pIdx = j;
+                                        timesArray[pIdx] += +1;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (pIdx == i) {
+                            if (aPList.size() > 0) {
+                                aPolygon = new Polygon();
+                                aPolygon.IsBorder = true;
+                                aPolygon.LowValue = aValue;
+                                aPolygon.HighValue = bValue;
+                                aBound = new Extent();
+                                aPolygon.Area = getExtentAndArea(aPList, aBound);
+                                aPolygon.IsClockWise = false;
+                                aPolygon.StartPointIdx = lineBorderList.size() - 1;
+                                aPolygon.Extent = aBound;
+                                aPolygon.OutLine.PointList = aPList;
+                                aPolygon.OutLine.Value = aValue;
+                                aPolygon.IsHighCenter = true;
+                                aPolygon.HoleLines = new ArrayList<>();
+                                if (vvNum > 0) {
+                                    if (cValue < aValue) {
+                                        aPolygon.IsHighCenter = false;
+                                        aPolygon.HighValue = aValue;
+                                    }
+                                }
+                                aPolygon.OutLine.Type = "Border";
+                                aPolygonList.add(aPolygon);
+                            }
+                            break;
+                        }
+                        pIdx += -1;
+                        if (pIdx == -1) {
+                            pIdx = pNum - 1;
+                        }
+
+                    }
                 }
             }
         }
@@ -4497,29 +3971,26 @@ public class Contour {
         List<PointD> newPList = new ArrayList<>();
         Extent aBound;
         double aValue;
-        double bValue;
         PointD aPoint;
 
         if (borderPolygons.isEmpty()) //Add border polygon
         {
             //Get max & min values
-            double max = aLineList.get(0).Value, min = aLineList.get(0).Value;
+            aValue = borderList.get(0).Value;
+            double max = Double.MAX_VALUE, min = Double.MIN_VALUE;
             for (PolyLine aPLine : aLineList) {
-                if (aPLine.Value > max) {
-                    max = aPLine.Value;
-                }
-                if (aPLine.Value < min) {
+                if (aPLine.Value < aValue && aPLine.Value > min) {
                     min = aPLine.Value;
+                }
+                if (aPLine.Value > aValue && aPLine.Value < max) {
+                    max = aPLine.Value;
                 }
             }
             aPolygon = new Polygon();
-            aValue = borderList.get(0).Value;
-            if (aValue < min) {
-                max = min;
+            if (min == Double.MIN_VALUE) {
                 min = aValue;
                 aPolygon.IsHighCenter = true;
-            } else if (aValue > max) {
-                min = max;
+            } else if (max == Double.MAX_VALUE) {
                 max = aValue;
                 aPolygon.IsHighCenter = false;
             }
