@@ -94,7 +94,7 @@ public class Interpolate {
         double w, SV, SW, aMin;
         int points;
         points = NumberOfNearestNeighbors;
-        Object[][] NW = new Object[1][points];
+        Object[][] NW = new Object[2][points];
 
         //---- Do interpolation
         for (i = 0; i < rowNum; i++) {
