@@ -9,32 +9,15 @@ import java.util.List;
 
 /**
  * BorderLine class
- * 
+ *
  * @author Yaqiang Wang
  */
 public class BorderLine {
-    /// <summary>
-        /// Area
-        /// </summary>
-        public double area;
-        /// <summary>
-        /// Extent
-        /// </summary>
-        public Extent extent = new Extent();
-        /// <summary>
-        /// Is outline
-        /// </summary>
-        public boolean isOutLine;
-        /// <summary>
-        /// Is clockwise
-        /// </summary>
-        public boolean isClockwise;
-        /// <summary>
-        /// Point list
-        /// </summary>
-        public List<PointD> pointList = new ArrayList<PointD>();
-        /// <summary>
-        /// IJPoint list
-        /// </summary>
-        public List<IJPoint> ijPointList = new ArrayList<IJPoint>();
+
+    public double area;
+    public Extent extent = new Extent();
+    public boolean isOutLine;
+    public boolean isClockwise;
+    public List<PointD> pointList = new ArrayList<>();
+    public List<IJPoint> ijPointList = new ArrayList<>();
 }

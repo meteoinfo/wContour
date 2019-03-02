@@ -11,17 +11,18 @@ import java.util.Collections;
 
 /**
  * Polygon class
- * 
+ *
  * @author Yaqiang Wang
  */
 public class Polygon {
+
     // <editor-fold desc="Variables">
-     /**
+    /**
      * If is border contour polygon
      */
     public boolean IsBorder;
     /**
-     *  If there is only inner border
+     * If there is only inner border
      */
     public boolean IsInnerBorder = false;
     /**
@@ -36,41 +37,46 @@ public class Polygon {
      * If clockwise
      */
     public boolean IsClockWise;
-    /// <summary>
-    /// Start point index
-    /// </summary>
+    /**
+     * Start point index
+     */
     public int StartPointIdx;
-    /// <summary>
-    /// If high center
-    /// </summary>
+
+    /**
+     * Is high center or not
+     */
     public boolean IsHighCenter;
-    /// <summary>
-    /// Extent - bordering rectangle
-    /// </summary>
+
+    /**
+     * Extent - bordering rectangle
+     */
     public Extent Extent = new Extent();
-    /// <summary>
-    /// Area
-    /// </summary>
+
+    /**
+     * Area
+     */
     public double Area;
-    /// <summary>
-    /// Outline
-    /// </summary>
+
+    /**
+     * Outline
+     */
     public PolyLine OutLine = new PolyLine();
-    /// <summary>
-    /// Hole lines
-    /// </summary>
-    public List<PolyLine> HoleLines = new ArrayList<PolyLine>();
-    /// <summary>
-    /// Hole index
-    /// </summary>
+
+    /**
+     * Hole lines
+     */
+    public List<PolyLine> HoleLines = new ArrayList<>();
+
+    /**
+     * Hole index
+     */
     public int HoleIndex;
 
     // </editor-fold>
     // <editor-fold desc="Methods">
-
     /**
-     *  Clone the object
-     * 
+     * Clone the object
+     *
      * @return cloned Polygon object
      */
     public Object Clone() {
@@ -84,31 +90,35 @@ public class Polygon {
         aPolygon.Extent = Extent;
         aPolygon.Area = Area;
         aPolygon.OutLine = OutLine;
-        aPolygon.HoleLines = new ArrayList<PolyLine>(HoleLines);
+        aPolygon.HoleLines = new ArrayList<>(HoleLines);
         aPolygon.HoleIndex = HoleIndex;
 
         return aPolygon;
     }
 
-    /// <summary>
-    /// Get if has holes
-    /// </summary>
+    /**
+     * Get if has holes
+     *
+     * @return Boolean
+     */
     public boolean HasHoles() {
         return (HoleLines.size() > 0);
     }
 
-    /// <summary>
-    /// Add a hole by a polygon
-    /// </summary>
-    /// <param name="aPolygon">polygon</param>
+    /**
+     * Add a pohygon hole
+     *
+     * @param aPolygon The polygon hole
+     */
     public void AddHole(Polygon aPolygon) {
         HoleLines.add(aPolygon.OutLine);
     }
 
-    /// <summary>
-    /// Add a hole by point list
-    /// </summary>
-    /// <param name="pList">point list</param>
+    /**
+     * Add a hole by point list
+     *
+     * @param pList The point list
+     */
     public void AddHole(List<PointD> pList) {
         if (Contour.isClockwise(pList)) {
             Collections.reverse(pList);

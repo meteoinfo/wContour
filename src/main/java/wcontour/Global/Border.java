@@ -14,13 +14,20 @@ import java.util.ArrayList;
  * @version $Revision: 1.6 $
  */
 public class Border {
-    public List<BorderLine> LineList = new ArrayList<BorderLine>();
+    public List<BorderLine> LineList = new ArrayList<>();
     
+    /**
+     * Constructor
+     */
     public Border()
     {
         
     }
     
+    /**
+     * Get line number
+     * @return Line number
+     */
     public int getLineNum(){
         return LineList.size();
     }

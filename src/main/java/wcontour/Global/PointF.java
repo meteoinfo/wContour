@@ -6,20 +6,28 @@ package wContour.Global;
 
 /**
  * PointF class
- * 
+ *
  * @author Yaqiang Wang
  */
 public class PointF {
+
     public float X;
     public float Y;
-    
-    public PointF()
-    {
-        
+
+    /**
+     * Constructor
+     */
+    public PointF() {
+
     }
-    
-    public PointF(float x, float y)
-    {
+
+    /**
+     * Constructor
+     *
+     * @param x X
+     * @param y Y
+     */
+    public PointF(float x, float y) {
         X = x;
         Y = y;
     }
