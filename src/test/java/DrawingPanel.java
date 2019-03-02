@@ -14,7 +14,11 @@
  */
 
 
-import wContour.Global.*;
+import wcontour.global.PolyLine;
+import wcontour.global.LegendPara;
+import wcontour.global.BorderLine;
+import wcontour.global.PointD;
+import wcontour.global.LPolygon;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.io.BufferedReader;
@@ -30,9 +34,10 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import wContour.Contour;
-import wContour.Interpolate;
-import wContour.Legend;
+import wcontour.Contour;
+import wcontour.Interpolate;
+import wcontour.Legend;
+import wcontour.global.Border;
 
 /**
  * DrawingPanel - Paint the graphics
@@ -53,8 +58,8 @@ public class DrawingPanel extends JPanel {
     List<Border> _borders = new ArrayList<>();
     List<PolyLine> _contourLines = new ArrayList<>();
     List<PolyLine> _clipContourLines = new ArrayList<>();
-    List<wContour.Global.Polygon> _contourPolygons = new ArrayList<>();
-    List<wContour.Global.Polygon> _clipContourPolygons = new ArrayList<>();
+    List<wcontour.global.Polygon> _contourPolygons = new ArrayList<>();
+    List<wcontour.global.Polygon> _clipContourPolygons = new ArrayList<>();
     List<LPolygon> _legendPolygons = new ArrayList<>();
     List<PolyLine> _streamLines = new ArrayList<>();
     List<List<PointD>> _clipLines = new ArrayList<>();
@@ -794,7 +799,7 @@ public class DrawingPanel extends JPanel {
     }
 
     private void drawContourPolygons(Graphics2D g) {
-        List<wContour.Global.Polygon> drawPolygons = _contourPolygons;
+        List<wcontour.global.Polygon> drawPolygons = _contourPolygons;
         if (_drawClipped) {
             drawPolygons = _clipContourPolygons;
         }
@@ -804,7 +809,7 @@ public class DrawingPanel extends JPanel {
             values.add(String.valueOf(v));
         }
         for (int i = 0; i < drawPolygons.size(); i++) {
-            wContour.Global.Polygon aPolygon = drawPolygons.get(i);
+            wcontour.global.Polygon aPolygon = drawPolygons.get(i);
             drawPolygon(g, aPolygon, values, false);
         }
         if (this._highlight) {
@@ -814,7 +819,7 @@ public class DrawingPanel extends JPanel {
         }
     }
 
-    private void drawPolygon(Graphics2D g, wContour.Global.Polygon aPolygon, List<String> values, boolean isHighlight) {
+    private void drawPolygon(Graphics2D g, wcontour.global.Polygon aPolygon, List<String> values, boolean isHighlight) {
         PointD aPoint;
         String aValue = String.valueOf(aPolygon.LowValue);
         int idx = values.indexOf(aValue) + 1;

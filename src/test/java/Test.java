@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import wContour.Interpolate;
+import wcontour.Interpolate;
 
 public class Test {
 

@@ -2,12 +2,12 @@
  * Copyright 2012 Yaqiang Wang,
  * yaqiang.wang@gmail.com
  */
-package wContour;
+package wcontour;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import wContour.KDTree.Euclidean;
+import wcontour.KDTree.Euclidean;
 
 /**
  * Interpolate class - including the functions of interpolation

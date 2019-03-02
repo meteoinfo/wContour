@@ -2,9 +2,19 @@
  * Copyright 2012 Yaqiang Wang,
  * yaqiang.wang@gmail.com
  */
-package wContour;
+package wcontour;
 
-import wContour.Global.*;
+import wcontour.global.PointF;
+import wcontour.global.PointD;
+import wcontour.global.IJPoint;
+import wcontour.global.EndPoint;
+import wcontour.global.BorderPoint;
+import wcontour.global.PolyLine;
+import wcontour.global.Polygon;
+import wcontour.global.Line;
+import wcontour.global.Border;
+import wcontour.global.BorderLine;
+import wcontour.global.Extent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;

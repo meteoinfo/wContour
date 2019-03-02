@@ -2,9 +2,11 @@
  * Copyright 2012 Yaqiang Wang,
  * yaqiang.wang@gmail.com
  */
-package wContour;
+package wcontour;
 
-import wContour.Global.*;
+import wcontour.global.PointD;
+import wcontour.global.LPolygon;
+import wcontour.global.LegendPara;
 import java.util.ArrayList;
 import java.util.List;
 
