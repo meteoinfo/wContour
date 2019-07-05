@@ -65,6 +65,9 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <locale>en_US</locale>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
                             <failOnError>false</failOnError>
                             <failOnWarnings>false</failOnWarnings>
                         </configuration>
