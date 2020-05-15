@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JColorChooser;
@@ -490,7 +491,8 @@ public class frmMain extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        fn = fn + File.separator + "sample" + File.separator + "test2.grd";
+        fn = this.getClass().getResource("/sample/test2.grd").getPath();
+        //fn = fn + File.separator + "sample" + File.separator + "test2.grd";
         File aFile = new File(fn);
         if (aFile.isFile()) {
             try {
@@ -538,16 +540,7 @@ public class frmMain extends javax.swing.JFrame {
     private void jMenuItem_HelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_HelpActionPerformed
         // TODO add your handling code here:
         try {
-            File directory = new File(".");
-            String fn = null;
-            try {
-                fn = directory.getCanonicalPath();
-            } catch (IOException ex) {
-                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            fn = fn + File.separator + "help" + File.separator + "index.html";
-            File f = new File(fn);            
-            URI uri = f.toURI();
+            URI uri = new URI("http://www.meteothink.org/docs/wcontour/index.html");
             Desktop desktop = null;
             if (Desktop.isDesktopSupported()) {
                 desktop = Desktop.getDesktop();
@@ -555,8 +548,10 @@ public class frmMain extends javax.swing.JFrame {
             if (desktop != null) {
                 desktop.browse(uri);
             }
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ioe) {
-        } 
+        }
     }//GEN-LAST:event_jMenuItem_HelpActionPerformed
 
     public DrawingPanel getDrawingPanel() {

@@ -81,6 +81,7 @@ public class DrawingPanel extends JPanel {
     private int _highlightIdx = 0;
 
     public DrawingPanel() {
+        this.setDoubleBuffered(true);
     }
 
     // <editor-fold desc="Contour Methods">
@@ -110,7 +111,8 @@ public class DrawingPanel extends JPanel {
         } catch (IOException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        fn = fn + File.separator + "sample" + File.separator + "China.wmp";
+        fn = this.getClass().getResource("/sample/China.wmp").getPath();
+        //fn = fn + File.separator + "sample" + File.separator + "China.wmp";
         File aFile = new File(fn);
         try {
             readMapFile_WMP(aFile);
@@ -121,9 +123,11 @@ public class DrawingPanel extends JPanel {
         }
         _mapLines = new ArrayList<>(_clipLines);
         if (type == 1) {
-            dfn = dfn + File.separator + "sample" + File.separator + "Temp_2010101420.csv";
+            dfn = this.getClass().getResource("/sample/Temp_2010101420.csv").getPath();
+            //dfn = dfn + File.separator + "sample" + File.separator + "Temp_2010101420.csv";
         } else {
-            dfn = dfn + File.separator + "sample" + File.separator + "Prec_2010101420.csv";
+            dfn = this.getClass().getResource("/sample/Prec_2010101420.csv").getPath();
+            //dfn = dfn + File.separator + "sample" + File.separator + "Prec_2010101420.csv";
         }
         File dFile = new File(dfn);
         try {
@@ -160,7 +164,7 @@ public class DrawingPanel extends JPanel {
                 radList.add(4.0);
                 radList.add(2.0);
                 //_gridData = Interpolate.cressman(_discreteData, _X, _Y, _undefData, radList);
-                _gridData = Interpolate.cressman_kdTree(_gridData, _X, _Y, _undefData, radList);
+                _gridData = Interpolate.cressman_kdTree(_discreteData, _X, _Y, _undefData, radList);
                 values = new double[]{0.1, 1, 2, 5, 10, 20, 25, 50, 100};
                 break;
         }
@@ -196,7 +200,8 @@ public class DrawingPanel extends JPanel {
         } catch (IOException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        fn = fn + File.separator + "sample" + File.separator + "China.wmp";
+        fn = this.getClass().getResource("/sample/China.wmp").getPath();
+        //fn = fn + File.separator + "sample" + File.separator + "China.wmp";
         File aFile = new File(fn);
         try {
             readMapFile_WMP(aFile);
@@ -205,9 +210,11 @@ public class DrawingPanel extends JPanel {
         }
 
         _mapLines = new ArrayList<List<PointD>>(_clipLines);
-        udfn = udfn + File.separator + "sample" + File.separator + "uwnd.grd";
+        udfn = this.getClass().getResource("/sample/uwnd.grd").getPath();
+        //udfn = udfn + File.separator + "sample" + File.separator + "uwnd.grd";
         double[][] UData = this.readSuferGridData(new File(udfn));
-        vdfn = vdfn + File.separator + "sample" + File.separator + "vwnd.grd";
+        vdfn = this.getClass().getResource("/sample/vwnd.grd").getPath();
+        //vdfn = vdfn + File.separator + "sample" + File.separator + "vwnd.grd";
         double[][] VData = this.readSuferGridData(new File(vdfn));
 
         //Streamline
@@ -708,8 +715,10 @@ public class DrawingPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         if (_antiAlias) {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         } else {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
         }
 
         if (_drawContourPolygon && this._contourPolygons.size() > 0) {

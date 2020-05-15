@@ -49,7 +49,7 @@ public class frmAbout extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/wcontourdemo/resources/about.png"))); // NOI18N
+        //jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/wcontourdemo/resources/about.png"))); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("宋体", 1, 18)); // NOI18N
         jLabel2.setText("wContour Demo");
@@ -65,7 +65,7 @@ public class frmAbout extends javax.swing.JDialog {
 
         jLabel6.setText("Yaqiang Wang");
 
-        jLabel7.setText("1.6");
+        jLabel7.setText("1.6.1");
 
         jLabel8.setFont(new java.awt.Font("宋体", 1, 15)); // NOI18N
         jLabel8.setText("Email:");
@@ -76,7 +76,7 @@ public class frmAbout extends javax.swing.JDialog {
         jLabel10.setText("Homepage:");
 
         jLabel11.setForeground(new java.awt.Color(0, 0, 255));
-        jLabel11.setText("htt://www.meteothinker.com");
+        jLabel11.setText("htt://www.meteothink.org");
         jLabel11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -155,7 +155,7 @@ public class frmAbout extends javax.swing.JDialog {
     private void jLabel11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel11MouseClicked
         // TODO add your handling code here:
         try {
-            URI uri = new URI("http://www.meteothinker.com");
+            URI uri = new URI("http://www.meteothink.org");
             Desktop desktop = null;
             if (Desktop.isDesktopSupported()) {
                 desktop = Desktop.getDesktop();
