@@ -4,17 +4,8 @@
  */
 package wcontour;
 
-import wcontour.global.PointF;
-import wcontour.global.PointD;
-import wcontour.global.IJPoint;
-import wcontour.global.EndPoint;
-import wcontour.global.BorderPoint;
-import wcontour.global.PolyLine;
-import wcontour.global.Polygon;
-import wcontour.global.Line;
-import wcontour.global.Border;
-import wcontour.global.BorderLine;
-import wcontour.global.Extent;
+import wcontour.global.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -427,8 +418,6 @@ public class Contour {
      * @param Y Y coordinate array
      * @param nc number of contour values
      * @param contour contour value array
-     * @param nx interval of X coordinate
-     * @param ny interval of Y coordinate
      * @param S1 flag array
      * @param undefData undefine data
      * @param borders border line list
@@ -5576,12 +5565,374 @@ public class Contour {
         return true;
     }
 
+    /**
+     * Tracing 3D stream lines
+     *
+     * @param U U component array
+     * @param V V component array
+     * @param W W component array
+     * @param X X coordinate array
+     * @param Y Y coordinate array
+     * @param Z Z coordinate array
+     * @param density stream line density
+     * @return streamlines
+     */
+    public static List<PolyLine3D> tracingStreamline3D(double[][][] U, double[][][] V, double[][][] W, double[] X,
+                                                     double[] Y, double[] Z, int density) {
+        List<PolyLine3D> streamLines = new ArrayList<>();
+        int xNum = U[0][0].length;
+        int yNum = U[0].length;
+        int zNum = U.length;
+        double[][][] Dx = new double[zNum][yNum][xNum];
+        double[][][] Dy = new double[zNum][yNum][xNum];
+        double[][][] Dz = new double[zNum][yNum][xNum];
+        double deltX = X[1] - X[0];
+        double deltY = Y[1] - Y[0];
+        double deltZ = Z[1] - Z[0];
+        if (density == 0) {
+            density = 1;
+        }
+        double radius = deltX / (Math.pow(density, 2));
+        double smallRadius = radius * 1.5;
+        int i, j, m;
+
+        //Normalize wind components
+        for (m = 0; m < zNum; m++) {
+            for (i = 0; i < yNum; i++) {
+                for (j = 0; j < xNum; j++) {
+                    if (Double.isNaN(U[m][i][j])) {
+                        Dx[m][i][j] = 0.1;
+                        Dy[m][i][j] = 0.1;
+                        Dz[m][i][j] = 0.1;
+                    } else {
+                        double WS = Math.sqrt(U[m][i][j] * U[m][i][j] + V[m][i][j] * V[m][i][j] + W[m][i][j] *
+                                W[m][i][j]);
+                        if (WS == 0) {
+                            WS = 1;
+                        }
+                        Dx[m][i][j] = (U[m][i][j] / WS) * deltX / density;
+                        Dy[m][i][j] = (V[m][i][j] / WS) * deltY / density;
+                        Dz[m][i][j] = (W[m][i][j] / WS) * deltZ / density;
+                    }
+                }
+            }
+        }
+
+        //Flag the grid boxes
+        List[][][] SPoints = new ArrayList[zNum - 1][yNum - 1][xNum - 1];
+        int[][][] flags = new int[zNum - 1][yNum - 1][xNum - 1];
+        for (m = 0; m < zNum - 1; m++) {
+            for (i = 0; i < yNum - 1; i++) {
+                for (j = 0; j < xNum - 1; j++) {
+                    if (m % 2 == 0 && i % 2 == 0 && j % 2 == 0) {
+                        flags[m][i][j] = 0;
+                    } else {
+                        flags[m][i][j] = 1;
+                    }
+
+                    SPoints[m][i][j] = new ArrayList<BorderPoint>();
+                }
+            }
+        }
+
+        //Tracing streamline
+        double dis;
+        BorderPoint borderP;
+        int lineN = 0;
+        for (m = 0; m < zNum - 1; m++) {
+            for (i = 0; i < yNum - 1; i++) {
+                for (j = 0; j < xNum - 1; j++) {
+                    if (flags[m][i][j] == 0) //No streamline started form this grid box, a new streamline started
+                    {
+                        List<Point3D> pList = new ArrayList<>();
+                        Point3D aPoint = new Point3D();
+                        int mm, ii, jj;
+                        int loopN;
+                        PolyLine3D aPL = new PolyLine3D();
+
+                        //Start point - the center of the grid box
+                        aPoint.X = X[j] + deltX / 2;
+                        aPoint.Y = Y[i] + deltY / 2;
+                        aPoint.Z = Z[m] + deltZ / 2;
+                        pList.add((Point3D) aPoint.clone());
+                        borderP = new BorderPoint();
+                        borderP.Point = (Point3D) aPoint.clone();
+                        borderP.Id = lineN;
+                        SPoints[m][i][j].add(borderP);
+                        flags[m][i][j] = 1;    //Flag the grid box and no streamline will start from this box again
+                        ii = i;
+                        jj = j;
+                        mm = j;
+                        int loopLimit = 500;
+
+                        //Tracing forward
+                        loopN = 0;
+                        while (loopN < loopLimit) {
+                            //Trace next streamline point
+                            int[] mmiijj = new int[3];
+                            mmiijj[0] = mm;
+                            mmiijj[1] = ii;
+                            mmiijj[2] = jj;
+                            boolean isInDomain = tracingStreamlinePoint3D(aPoint, Dx, Dy, Dz, X, Y, Z, mmiijj, true);
+                            mm = mmiijj[0];
+                            ii = mmiijj[1];
+                            jj = mmiijj[2];
+
+                            //Terminating the streamline
+                            if (isInDomain) {
+                                if (Double.isNaN(U[mm][ii][jj]) || Double.isNaN(U[mm][ii][jj + 1])
+                                        || Double.isNaN(U[mm][ii + 1][jj]) || Double.isNaN(U[mm][ii + 1][jj + 1])
+                                        || Double.isNaN(U[mm + 1][ii][jj]) || Double.isNaN(U[mm + 1][ii][jj + 1])
+                                        || Double.isNaN(U[mm + 1][ii + 1][jj]) || Double.isNaN(U[mm + 1][ii + 1][jj + 1])) {
+                                    break;
+                                } else {
+                                    boolean isTerminating = false;
+                                    for (BorderPoint sPoint : (List<BorderPoint>) SPoints[mm][ii][jj]) {
+                                        if (Math.sqrt((aPoint.X - sPoint.Point.X) * (aPoint.X - sPoint.Point.X)
+                                                + (aPoint.Y - sPoint.Point.Y) * (aPoint.Y - sPoint.Point.Y)
+                                                + (aPoint.Z - ((Point3D)sPoint.Point).Z) * (aPoint.Z - ((Point3D)sPoint.Point).Z)) < radius) {
+                                            isTerminating = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!isTerminating) {
+                                        if (SPoints[mm][ii][jj].size() > 1) {
+                                            BorderPoint pointStart = (BorderPoint) SPoints[mm][ii][jj].get(0);
+                                            BorderPoint pointEnd = (BorderPoint) SPoints[mm][ii][jj].get(1);
+                                            if (!(lineN == pointStart.Id && lineN == pointEnd.Id)) {
+                                                dis = distance_point2line(pointStart.Point, pointEnd.Point, aPoint);
+                                                if (dis < smallRadius) {
+                                                    isTerminating = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!isTerminating) {
+                                        pList.add((Point3D) aPoint.clone());
+                                        borderP = new BorderPoint();
+                                        borderP.Point = (PointD) aPoint.clone();
+                                        borderP.Id = lineN;
+                                        SPoints[mm][ii][jj].add(borderP);
+                                        flags[mm][ii][jj] = 1;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                break;
+                            }
+
+                            loopN += 1;
+                        }
+
+                        //Tracing backword
+                        aPoint.X = X[j] + deltX / 2;
+                        aPoint.Y = Y[i] + deltY / 2;
+                        aPoint.Z = Z[i] + deltZ / 2;
+                        mm = m;
+                        ii = i;
+                        jj = j;
+                        loopN = 0;
+                        while (loopN < loopLimit) {
+                            //Trace next streamline point
+                            int[] mmiijj = new int[3];
+                            mmiijj[0] = mm;
+                            mmiijj[1] = ii;
+                            mmiijj[2] = jj;
+                            boolean isInDomain = tracingStreamlinePoint3D(aPoint, Dx, Dy, Dz, X, Y, Z, mmiijj, false);
+                            mm = mmiijj[0];
+                            ii = mmiijj[1];
+                            jj = mmiijj[2];
+
+                            //Terminating the streamline
+                            if (isInDomain) {
+                                if (Double.isNaN(U[mm][ii][jj]) || Double.isNaN(U[mm][ii][jj + 1])
+                                        || Double.isNaN(U[mm][ii + 1][jj]) || Double.isNaN(U[mm][ii + 1][jj + 1])
+                                        || Double.isNaN(U[mm + 1][ii][jj]) || Double.isNaN(U[mm + 1][ii][jj + 1])
+                                        || Double.isNaN(U[mm + 1][ii + 1][jj]) || Double.isNaN(U[mm + 1][ii + 1][jj + 1])) {
+                                    break;
+                                } else {
+                                    boolean isTerminating = false;
+                                    for (BorderPoint sPoint : (List<BorderPoint>) SPoints[mm][ii][jj]) {
+                                        if (Math.sqrt((aPoint.X - sPoint.Point.X) * (aPoint.X - sPoint.Point.X)
+                                                + (aPoint.Y - sPoint.Point.Y) * (aPoint.Y - sPoint.Point.Y)
+                                                + (aPoint.Z - ((Point3D)sPoint.Point).Z) * (aPoint.Z - ((Point3D)sPoint.Point).Z)) < radius) {
+                                            isTerminating = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!isTerminating) {
+                                        if (SPoints[mm][ii][jj].size() > 1) {
+                                            BorderPoint pointStart = (BorderPoint) SPoints[mm][ii][jj].get(0);
+                                            BorderPoint pointEnd = (BorderPoint) SPoints[mm][ii][jj].get(1);
+                                            if (!(lineN == pointStart.Id && lineN == pointEnd.Id)) {
+                                                dis = distance_point2line3d(aPoint, (Point3D)pointStart.Point, (Point3D) pointEnd.Point);
+                                                if (dis < smallRadius) {
+                                                    isTerminating = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!isTerminating) {
+                                        pList.add(0, (Point3D) aPoint.clone());
+                                        borderP = new BorderPoint();
+                                        borderP.Point = (Point3D) aPoint.clone();
+                                        borderP.Id = lineN;
+                                        SPoints[mm][ii][jj].add(borderP);
+                                        flags[mm][ii][jj] = 1;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                break;
+                            }
+
+                            loopN += 1;
+                        }
+                        if (pList.size() > 1) {
+                            aPL.PointList = pList;
+                            streamLines.add(aPL);
+                            lineN += 1;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        //Return
+        return streamLines;
+    }
+
+    private static boolean tracingStreamlinePoint3D(Point3D aPoint, double[][][] Dx, double[][][] Dy, double[][][] Dz,
+                                                    double[] X, double[] Y, double[] Z, int[] mmiijj, boolean isForward) {
+        double a, b, c, d, val1, val2;
+        double dx, dy, dz, d1, d2;
+        int xNum = X.length;
+        int yNum = Y.length;
+        int zNum = Z.length;
+        double deltX = X[1] - X[0];
+        double deltY = Y[1] - Y[0];
+        double deltZ = Z[1] - Z[0];
+        int mm = mmiijj[0];
+        int ii = mmiijj[1];
+        int jj = mmiijj[2];
+
+        //Interpolation the U/V displacement components to the point
+        a = Dx[mm][ii][jj];
+        b = Dx[mm][ii][jj + 1];
+        c = Dx[mm][ii + 1][jj];
+        d = Dx[mm][ii + 1][jj + 1];
+        val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
+        val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
+        d1 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
+        a = Dx[mm + 1][ii][jj];
+        b = Dx[mm + 1][ii][jj + 1];
+        c = Dx[mm + 1][ii + 1][jj];
+        d = Dx[mm + 1][ii + 1][jj + 1];
+        val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
+        val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
+        d2 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
+        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm] / deltZ));
+
+        a = Dy[mm][ii][jj];
+        b = Dy[mm][ii][jj + 1];
+        c = Dy[mm][ii + 1][jj];
+        d = Dy[mm][ii + 1][jj + 1];
+        val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
+        val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
+        d1 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
+        a = Dy[mm + 1][ii][jj];
+        b = Dy[mm + 1][ii][jj + 1];
+        c = Dy[mm + 1][ii + 1][jj];
+        d = Dy[mm + 1][ii + 1][jj + 1];
+        val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
+        val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
+        d2 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
+        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm] / deltZ));
+
+        a = Dz[mm][ii][jj];
+        b = Dz[mm][ii][jj + 1];
+        c = Dz[mm][ii + 1][jj];
+        d = Dz[mm][ii + 1][jj + 1];
+        val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
+        val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
+        d1 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
+        a = Dz[mm + 1][ii][jj];
+        b = Dz[mm + 1][ii][jj + 1];
+        c = Dz[mm + 1][ii + 1][jj];
+        d = Dz[mm + 1][ii + 1][jj + 1];
+        val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
+        val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
+        d2 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
+        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm] / deltZ));
+
+        //Tracing forward by U/V displacement components
+        if (isForward) {
+            aPoint.X += dx;
+            aPoint.Y += dy;
+            aPoint.Z += dz;
+        } else {
+            aPoint.X -= dx;
+            aPoint.Y -= dy;
+            aPoint.Z -= dz;
+        }
+
+        //Find the grid box that the point is located
+        if (!(aPoint.X >= X[jj] && aPoint.X <= X[jj + 1] && aPoint.Y >= Y[ii] && aPoint.Y <= Y[ii + 1]
+            && aPoint.Z >= Z[mm] && aPoint.Z <= Z[mm + 1])) {
+            if (aPoint.X < X[0] || aPoint.X > X[X.length - 1] || aPoint.Y < Y[0]
+                    || aPoint.Y > Y[Y.length - 1] || aPoint.Z < Z[0] || aPoint.Z > Z[Z.length - 1]) {
+                return false;
+            }
+
+            //Get the grid box of the point located
+            for (int tm = mm - 2; tm < mm + 3; tm++) {
+                if (tm >= 0 && tm < zNum) {
+                    if (aPoint.Z >= Z[tm] && aPoint.Z <= Z[tm + 1]) {
+                        mm = tm;
+                        for (int ti = ii - 2; ti < ii + 3; ti++) {
+                            if (ti >= 0 && ti < yNum) {
+                                if (aPoint.Y >= Y[ti] && aPoint.Y <= Y[ti + 1]) {
+                                    ii = ti;
+                                    for (int tj = jj - 2; tj < jj + 3; tj++) {
+                                        if (tj >= 0 && tj < xNum) {
+                                            if (aPoint.X >= X[tj] && aPoint.X <= X[tj + 1]) {
+                                                jj = tj;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        mmiijj[0] = mm;
+        mmiijj[1] = ii;
+        mmiijj[2] = jj;
+        return true;
+    }
+
     private static double distance_point2line(PointD pt1, PointD pt2, PointD point) {
         double k = (pt2.Y - pt1.Y) / (pt2.X - pt1.X);
         double x = (k * k * pt1.X + k * (point.Y - pt1.Y) + point.X) / (k * k + 1);
         double y = k * (x - pt1.X) + pt1.Y;
         double dis = Math.sqrt((point.Y - y) * (point.Y - y) + (point.X - x) * (point.X - x));
         return dis;
+    }
+
+    private static double distance_point2line3d(Point3D p, Point3D p1, Point3D p2) {
+        Point3D d = p2.sub(p1).div(p2.distance(p1));
+        Point3D v = p.sub(p1);
+        double t = v.dot(d);
+        Point3D P = p1.add(d.mul(t));
+        return P.distance(p);
     }
 
     // </editor-fold>    
