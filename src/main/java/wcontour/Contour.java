@@ -5662,7 +5662,7 @@ public class Contour {
                         flags[m][i][j] = 1;    //Flag the grid box and no streamline will start from this box again
                         ii = i;
                         jj = j;
-                        mm = j;
+                        mm = m;
                         int loopLimit = 500;
 
                         //Tracing forward
@@ -5728,7 +5728,7 @@ public class Contour {
                         //Tracing backword
                         aPoint.X = X[j] + deltX / 2;
                         aPoint.Y = Y[i] + deltY / 2;
-                        aPoint.Z = Z[i] + deltZ / 2;
+                        aPoint.Z = Z[m] + deltZ / 2;
                         mm = m;
                         ii = i;
                         jj = j;
