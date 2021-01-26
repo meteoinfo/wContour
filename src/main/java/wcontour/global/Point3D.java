@@ -2,6 +2,7 @@ package wcontour.global;
 
 public class Point3D extends PointD{
     public double Z;
+    public double M;
 
     /**
      * Construction
@@ -18,6 +19,20 @@ public class Point3D extends PointD{
         this.X = x;
         this.Y = y;
         this.Z = z;
+    }
+
+    /**
+     * Construction
+     * @param x X
+     * @param y Y
+     * @param z Z
+     * @param m M
+     */
+    public Point3D(double x, double y, double z, double m) {
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+        this.M = m;
     }
 
     /**
@@ -76,6 +91,6 @@ public class Point3D extends PointD{
 
     @Override
     public Object clone() {
-        return new Point3D(X, Y, Z);
+        return new Point3D(X, Y, Z, M);
     }
 }
