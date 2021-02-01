@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.meteothink</groupId>
     <artifactId>wContour</artifactId>
-    <version>1.7</version>
+    <version>1.7.0</version>
     <packaging>jar</packaging>
     
     <parent>
@@ -54,7 +54,7 @@
     </developers>
     <build>
         <plugins>
-            <!--<plugin>
+            <plugin>
                 <inherited>true</inherited>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
@@ -73,7 +73,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 </project>
