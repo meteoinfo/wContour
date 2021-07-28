@@ -6072,10 +6072,11 @@ public class Contour {
      * @param Y Y coordinate array
      * @param Z Z coordinate array
      * @param density stream line density
+     * @param loopLimit Limit loop number
      * @return streamlines
      */
     public static List<PolyLine3D> tracingStreamline3D(double[][][] U, double[][][] V, double[][][] W, double[][][] M,
-                                                       double[] X, double[] Y, double[] Z, int density) {
+                                                       double[] X, double[] Y, double[] Z, int density, int loopLimit) {
         List<PolyLine3D> streamLines = new ArrayList<>();
         int xNum = U[0][0].length;
         int yNum = U[0].length;
@@ -6163,7 +6164,6 @@ public class Contour {
                         ii = i;
                         jj = j;
                         mm = m;
-                        int loopLimit = 500;
 
                         //Tracing forward
                         loopN = 0;
@@ -6417,11 +6417,12 @@ public class Contour {
      * @param Y Y coordinate array
      * @param Z Z coordinate array
      * @param density stream line density
+     * @param loopLimit Limit loop number
      * @return streamlines
      */
     public static List<PolyLine3D> tracingStreamline3D(double[][][] U, double[][][] V, double[][][] W, double[][][] M,
                                                        double[] X, double[] Y, double[] Z, int density, double[] sX,
-                                                       double[] sY, double[] sZ) {
+                                                       double[] sY, double[] sZ, int loopLimit) {
         List<PolyLine3D> streamLines = new ArrayList<>();
         int xNum = U[0][0].length;
         int yNum = U[0].length;
@@ -6441,6 +6442,11 @@ public class Contour {
 
         //Normalize wind components
         for (m = 0; m < zNum; m++) {
+            if (m == zNum - 1) {
+                deltZ = Z[m] - Z[m - 1];
+            } else {
+                deltZ = Z[m + 1] - Z[m];
+            }
             for (i = 0; i < yNum; i++) {
                 for (j = 0; j < xNum; j++) {
                     if (Double.isNaN(U[m][i][j])) {
@@ -6508,7 +6514,6 @@ public class Contour {
                 ii = i;
                 jj = j;
                 mm = m;
-                int loopLimit = 500;
 
                 //Tracing forward
                 loopN = 0;
@@ -6662,10 +6667,12 @@ public class Contour {
      * @param Y Y coordinate array
      * @param Z Z coordinate array
      * @param density Streamline density
+     * @param loopLimit Limit loop number
      * @return streamlines
      */
     public static List<PolyLine3D> tracingStreamline3D(double[][][] U, double[][][] V, double[][][] W, double[][][] M,
-                                                       double[][][] X, double[][][] Y, double[][][] Z, int density) {
+                                                       double[][][] X, double[][][] Y, double[][][] Z, int density,
+                                                       int loopLimit) {
         List<PolyLine3D> streamLines = new ArrayList<>();
         int xNum = U[0][0].length;
         int yNum = U[0].length;
@@ -6776,7 +6783,6 @@ public class Contour {
                         ii = i;
                         jj = j;
                         mm = m;
-                        int loopLimit = 500;
 
                         //Tracing forward
                         loopN = 0;
@@ -6939,11 +6945,12 @@ public class Contour {
      * @param Y Y coordinate array
      * @param Z Z coordinate array
      * @param density Streamline density
+     * @param loopLimit Limit loop number
      * @return streamlines
      */
     public static List<PolyLine3D> tracingStreamline3D(double[][][] U, double[][][] V, double[][][] W, double[][][] M,
                                                        double[][][] X, double[][][] Y, double[][][] Z, int density,
-                                                       double[] sX, double[] sY, double[] sZ) {
+                                                       double[] sX, double[] sY, double[] sZ, int loopLimit) {
         List<PolyLine3D> streamLines = new ArrayList<>();
         int xNum = U[0][0].length;
         int yNum = U[0].length;
@@ -7043,7 +7050,6 @@ public class Contour {
                 ii = i;
                 jj = j;
                 mm = m;
-                int loopLimit = 500;
 
                 //Tracing forward
                 loopN = 0;
@@ -7200,10 +7206,10 @@ public class Contour {
         int zNum = Z.length;
         double deltX = X[1] - X[0];
         double deltY = Y[1] - Y[0];
-        double deltZ = Z[1] - Z[0];
         int mm = mmiijj[0];
         int ii = mmiijj[1];
         int jj = mmiijj[2];
+        double deltZ = mm == zNum - 1 ? Z[mm] - Z[mm - 1] : Z[mm + 1] - Z[mm];
 
         //Interpolation the U/V displacement components to the point
         a = Dx[mm][ii][jj];
@@ -7220,7 +7226,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
         val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
-        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm] / deltZ));
+        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm]) / deltZ);
 
         a = Dy[mm][ii][jj];
         b = Dy[mm][ii][jj + 1];
@@ -7236,7 +7242,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
         val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
-        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm] / deltZ));
+        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm]) / deltZ);
 
         a = Dz[mm][ii][jj];
         b = Dz[mm][ii][jj + 1];
@@ -7252,7 +7258,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[ii]) / deltY);
         val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
-        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm] / deltZ));
+        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm]) / deltZ);
 
         //Tracing forward by U/V displacement components
         if (isForward) {
@@ -7335,7 +7341,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[mm][ii][jj]) / deltY);
         val2 = b + (d - b) * ((aPoint.Y - Y[mm][ii][jj]) / deltY);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[mm][ii][jj]) / deltX);
-        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj] / deltZ));
+        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj]) / deltZ);
 
         a = Dy[mm][ii][jj];
         b = Dy[mm][ii][jj + 1];
@@ -7351,7 +7357,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[mm][ii][jj]) / deltY);
         val2 = b + (d - b) * ((aPoint.Y - Y[mm][ii][jj]) / deltY);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[mm][ii][jj]) / deltX);
-        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj] / deltZ));
+        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj]) / deltZ);
 
         a = Dz[mm][ii][jj];
         b = Dz[mm][ii][jj + 1];
@@ -7367,7 +7373,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[mm][ii][jj]) / deltY);
         val2 = b + (d - b) * ((aPoint.Y - Y[mm][ii][jj]) / deltY);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[mm][ii][jj]) / deltX);
-        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj] / deltZ));
+        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj]) / deltZ);
 
         //Tracing forward by U/V displacement components
         if (isForward) {
@@ -7448,7 +7454,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[mm][ii][jj]) / deltY[mm][ii][jj]);
         val2 = b + (d - b) * ((aPoint.Y - Y[mm][ii][jj]) / deltY[mm][ii][jj]);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[mm][ii][jj]) / deltX[mm][ii][jj]);
-        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj] / deltZ[mm][ii][jj]));
+        dx = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj]) / deltZ[mm][ii][jj]);
 
         a = Dy[mm][ii][jj];
         b = Dy[mm][ii][jj + 1];
@@ -7464,7 +7470,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[mm][ii][jj]) / deltY[mm][ii][jj]);
         val2 = b + (d - b) * ((aPoint.Y - Y[mm][ii][jj]) / deltY[mm][ii][jj]);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[mm][ii][jj]) / deltX[mm][ii][jj]);
-        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj] / deltZ[mm][ii][jj]));
+        dy = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj]) / deltZ[mm][ii][jj]);
 
         a = Dz[mm][ii][jj];
         b = Dz[mm][ii][jj + 1];
@@ -7480,7 +7486,7 @@ public class Contour {
         val1 = a + (c - a) * ((aPoint.Y - Y[mm][ii][jj]) / deltY[mm][ii][jj]);
         val2 = b + (d - b) * ((aPoint.Y - Y[mm][ii][jj]) / deltY[mm][ii][jj]);
         d2 = val1 + (val2 - val1) * ((aPoint.X - X[mm][ii][jj]) / deltX[mm][ii][jj]);
-        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj] / deltZ[mm][ii][jj]));
+        dz = d1 + (d2 - d1) * ((aPoint.Z - Z[mm][ii][jj]) / deltZ[mm][ii][jj]);
 
         //Tracing forward by U/V displacement components
         if (isForward) {
