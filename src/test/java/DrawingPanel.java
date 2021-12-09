@@ -29,6 +29,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -175,6 +176,7 @@ public class DrawingPanel extends JPanel {
         setContourValues(values);
         tracingContourLines();
         smoothLines();
+        clockwiseClipLine();
         clipLines();
         tracingPolygons();
         clipPolygons();
@@ -623,19 +625,27 @@ public class DrawingPanel extends JPanel {
         _clipLines.add(cLine);
     }
 
-    public void clipLines() {
-        _clipContourLines = new ArrayList<>();
+    public void clockwiseClipLine(){
         for (List< PointD> cLine : _clipLines) {
-            _clipContourLines.addAll(Contour.clipPolylines(_contourLines, cLine));
+            if (!Contour.isClockwise(cLine)) //---- Make cut polygon clockwise
+            {
+                Collections.reverse(cLine);
+            }
         }
     }
 
-    public void clipPolygons() {
-        _clipContourPolygons = new ArrayList<>();
+    public void clipLines() {
+        _clipContourLines = Collections.synchronizedList(new ArrayList<>());
+        _clipLines.parallelStream().forEach((cLine)->{
+            _clipContourLines.addAll(Contour.clipPolylines(_contourLines, cLine));
+        });
+    }
 
-        for (List<PointD> cLine : _clipLines) {
+    public void clipPolygons() {
+        _clipContourPolygons = Collections.synchronizedList(new ArrayList<>());
+        _clipLines.parallelStream().forEach((cLine)->{
             _clipContourPolygons.addAll(Contour.clipPolygons(_contourPolygons, cLine));
-        }
+        });
     }
 
     public void tracingPolygons() {
