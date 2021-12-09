@@ -627,10 +627,7 @@ public class DrawingPanel extends JPanel {
 
     public void clockwiseClipLine(){
         for (List< PointD> cLine : _clipLines) {
-            if (!Contour.isClockwise(cLine)) //---- Make cut polygon clockwise
-            {
-                Collections.reverse(cLine);
-            }
+            Contour.clockwisePointList(cLine);
         }
     }
 
