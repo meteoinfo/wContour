@@ -1497,6 +1497,20 @@ public class Contour {
         }
     }
 
+
+
+    /**
+     * Make pointList clockwise
+     *
+     * @param pointList point list
+     */
+    public static void clockwisePointList(List<PointD> pointList) {
+        if (!isClockwise(pointList))
+        {
+            Collections.reverse(pointList);
+        }
+    }
+
     /**
      * Clip polylines with a border polygon
      *
@@ -1505,10 +1519,12 @@ public class Contour {
      * @return clipped polylines
      */
     public static List<PolyLine> clipPolylines(List<PolyLine> polylines, List<PointD> clipPList) {
-        List<PolyLine> newPolylines = new ArrayList<>();
-        for (PolyLine aPolyline : polylines) {
-            newPolylines.addAll(cutPolyline(aPolyline, clipPList));
-        }
+        clockwisePointList(clipPList);
+
+        List<PolyLine> newPolylines = Collections.synchronizedList(new ArrayList<>());
+        polylines.parallelStream().forEach(
+                aPolyline -> newPolylines.addAll(cutPolyline(aPolyline, clipPList))
+                 );
 
         return newPolylines;
     }
@@ -1521,15 +1537,16 @@ public class Contour {
      * @return clipped polygons
      */
     public static List<Polygon> clipPolygons(List<Polygon> polygons, List<PointD> clipPList) {
-        List<Polygon> newPolygons = new ArrayList<>();
-        for (int i = 0; i < polygons.size(); i++) {
-            Polygon aPolygon = polygons.get(i);
+        clockwisePointList(clipPList);
+
+        List<Polygon> newPolygons = Collections.synchronizedList(new ArrayList<>());
+        polygons.stream().parallel().forEach((aPolygon)->{
             if (aPolygon.HasHoles()) {
                 newPolygons.addAll(cutPolygon_Hole(aPolygon, clipPList));
             } else {
                 newPolygons.addAll(cutPolygon(aPolygon, clipPList));
             }
-        }
+        });
 
         //Sort polygons with bording rectangle area
         List<Polygon> outPolygons = new ArrayList<>();
@@ -4633,11 +4650,6 @@ public class Contour {
 
         int i, j;
 
-        if (!isClockwise(clipPList)) //---- Make cut polygon clockwise
-        {
-            Collections.reverse(clipPList);
-        }
-
         //Judge if all points of the polyline are in the cut polygon
         if (pointInPolygon(clipPList, aPList.get(0))) {
             boolean isAllIn = true;
@@ -4757,11 +4769,6 @@ public class Contour {
         }
 
         int i, j;
-
-        if (!isClockwise(clipPList)) //---- Make cut polygon clockwise
-        {
-            Collections.reverse(clipPList);
-        }
 
         //Judge if all points of the polyline are in the cut polygon - outline   
         List<List<PointD>> newLines = new ArrayList<>();
@@ -4950,7 +4957,7 @@ public class Contour {
         if (newPolylines.size() > 0) {
             //Tracing polygons
             newPolygons = tracingClipPolygons(inPolygon, newPolylines, borderList);
-        } else if (pointInPolygon(aPList, clipPList.get(0))) {
+        } else if (pointInPolygon(inPolygon.OutLine.PointList, clipPList.get(0))) {
             Extent aBound = new Extent();
             Polygon aPolygon = new Polygon();
             aPolygon.IsBorder = true;
@@ -4987,11 +4994,6 @@ public class Contour {
         }
 
         int i, j;
-
-        if (!isClockwise(clipPList)) //---- Make cut polygon clockwise
-        {
-            Collections.reverse(clipPList);
-        }
 
         //Judge if all points of the polyline are in the cut polygon            
         if (pointInPolygon(clipPList, aPList.get(0))) {
