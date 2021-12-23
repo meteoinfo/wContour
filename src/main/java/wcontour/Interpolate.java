@@ -64,8 +64,8 @@ public class Interpolate {
         double XDelt, YDelt;
         int Xnum = X.length;
         int Ynum = Y.length;
-        XDelt = (Xrt - Xlb) / Xnum;
-        YDelt = (Yrt - Ylb) / Ynum;
+        XDelt = (Xrt - Xlb) / (Xnum -1);
+        YDelt = (Yrt - Ylb) / (Ynum -1);
         for (i = 0; i < Xnum; i++) {
             X[i] = Xlb + i * XDelt;
         }
