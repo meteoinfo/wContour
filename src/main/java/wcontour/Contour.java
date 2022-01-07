@@ -4006,10 +4006,10 @@ public class Contour {
             aPolygon = new Polygon();
             if (min == Double.MIN_VALUE) {
                 min = aValue;
-                aPolygon.IsHighCenter = true;
+                aPolygon.IsHighCenter = false;
             } else if (max == Double.MAX_VALUE) {
                 max = aValue;
-                aPolygon.IsHighCenter = false;
+                aPolygon.IsHighCenter = true;
             }
             aLine = new PolyLine();
             aLine.Type = "Border";
