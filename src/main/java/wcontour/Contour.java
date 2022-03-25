@@ -7674,7 +7674,7 @@ public class Contour {
 
     }
 
-    private static boolean isLineSegmentCross(Line lineA, Line lineB) {
+    public static boolean isLineSegmentCross(Line lineA, Line lineB) {
         Extent boundA = new Extent(), boundB = new Extent();
         List<PointD> PListA = new ArrayList<>(), PListB = new ArrayList<>();
         PListA.add(lineA.P1);
