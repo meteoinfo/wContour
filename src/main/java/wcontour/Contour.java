@@ -8,8 +8,8 @@ import wcontour.global.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Contour class - including the functions of contour
@@ -45,7 +45,7 @@ public class Contour {
      * @return Contour line list
      */
     public static List<PolyLine> tracingContourLines(double[][] S0, double[] X, double[] Y,
-            int nc, double[] contour, double undefData, List<Border> borders, int[][] S1) {
+                                                     int nc, double[] contour, double undefData, List<Border> borders, int[][] S1) {
         List<PolyLine> contourLines = createContourLines_UndefData(S0, X, Y, nc, contour, S1, undefData, borders);
 
         return contourLines;
@@ -282,7 +282,7 @@ public class Contour {
                     i2 = i;
                     j2 = j;
                     i1 = i2;
-                    j1 = -1;    //Trace from left firstly                        
+                    j1 = -1;    //Trace from left firstly
 
                     while (true) {
                         int[] ij3 = new int[2];
@@ -425,7 +425,7 @@ public class Contour {
      * @return contour line list
      */
     private static List<PolyLine> createContourLines_UndefData(double[][] S0, double[] X, double[] Y,
-            int nc, double[] contour, int[][] S1, double undefData, List<Border> borders) {
+                                                               int nc, double[] contour, int[][] S1, double undefData, List<Border> borders) {
         List<PolyLine> contourLineList = new ArrayList<>();
         List<PolyLine> cLineList;
         int m, n, i, j;
@@ -499,7 +499,7 @@ public class Contour {
             }
         }
 
-        //---- Define horizontal and vertical arrays with the position of the tracing value, -2 means no tracing point. 
+        //---- Define horizontal and vertical arrays with the position of the tracing value, -2 means no tracing point.
         double[][] S = new double[m][n - 1];
         double[][] H = new double[m - 1][n];
         double w;    //---- Tracing value
@@ -582,7 +582,7 @@ public class Contour {
         m = S0.length;    //---- Y
         n = S0[0].length;    //---- X
 
-        //---- Define horizontal and vertical arrays with the position of the tracing value, -2 means no tracing point. 
+        //---- Define horizontal and vertical arrays with the position of the tracing value, -2 means no tracing point.
         double[][] S = new double[m][n - 1], H = new double[m - 1][n];
         double dShift;
         dShift = contour[0] * 0.00001;
@@ -1524,7 +1524,7 @@ public class Contour {
         List<PolyLine> newPolylines = Collections.synchronizedList(new ArrayList<>());
         polylines.parallelStream().forEach(
                 aPolyline -> newPolylines.addAll(cutPolyline(aPolyline, clipPList))
-                 );
+        );
 
         return newPolylines;
     }
@@ -1817,7 +1817,7 @@ public class Contour {
     }
 
     private static boolean traceIsoline_UndefData(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
-            double[] Y, double a2x, int[] ij3, double[] a3xy, boolean[] IsS) {
+                                                  double[] Y, double a2x, int[] ij3, double[] a3xy, boolean[] IsS) {
         boolean canTrace = true;
         double a3x = 0, a3y = 0;
         int i3 = 0, j3 = 0;
@@ -2005,7 +2005,7 @@ public class Contour {
     }
 
     private static boolean traceIsoline_UndefData_bak(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
-            double[] Y, double nx, double ny, double a2x, int[] ij3, double[] a3xy, boolean[] IsS) {
+                                                      double[] Y, double nx, double ny, double a2x, int[] ij3, double[] a3xy, boolean[] IsS) {
         boolean canTrace = true;
         double a3x = 0, a3y = 0;
         int i3 = 0, j3 = 0;
@@ -2193,7 +2193,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_UndefData(double[][] S0, double[] X, double[] Y,
-            double W, double[][] S, double[][] H, int[][][] SB, int[][][] HB, int lineNum) {
+                                                    double W, double[][] S, double[][] H, int[][][] SB, int[][][] HB, int lineNum) {
 
         List<PolyLine> cLineList = new ArrayList<>();
         int m, n, i, j;
@@ -2544,7 +2544,7 @@ public class Contour {
     }
 
     private static Object[] traceIsoline(int i1, int i2, double[][] H, double[][] S, int j1, int j2, double[] X,
-            double[] Y, double nx, double ny, double a2x) {
+                                         double[] Y, double nx, double ny, double a2x) {
         int i3, j3;
         double a3x, a3y;
         if (i1 < i2) //---- Trace from bottom
@@ -2695,7 +2695,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_Bottom(double[][] S0, double[] X, double[] Y, double W, double nx, double ny,
-            double[][] S, double[][] H) {
+                                                 double[][] S, double[][] H) {
         List<PolyLine> bLineList = new ArrayList<>();
         int m, n, j;
         m = S0.length;
@@ -2754,7 +2754,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_Left(double[][] S0, double[] X, double[] Y, double W, double nx, double ny,
-            double[][] S, double[][] H) {
+                                               double[][] S, double[][] H) {
         List<PolyLine> lLineList = new ArrayList<>();
         int m, n, i;
         m = S0.length;
@@ -2812,7 +2812,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_Top(double[][] S0, double[] X, double[] Y, double W, double nx, double ny,
-            double[][] S, double[][] H) {
+                                              double[][] S, double[][] H) {
         List<PolyLine> tLineList = new ArrayList<>();
         int m, n, j;
         m = S0.length;
@@ -2870,7 +2870,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_Right(double[][] S0, double[] X, double[] Y, double W, double nx, double ny,
-            double[][] S, double[][] H) {
+                                                double[][] S, double[][] H) {
         List<PolyLine> rLineList = new ArrayList<>();
         int m, n, i;
         m = S0.length;
@@ -2926,7 +2926,7 @@ public class Contour {
     }
 
     private static List<PolyLine> isoline_Close(double[][] S0, double[] X, double[] Y, double W, double nx, double ny,
-            double[][] S, double[][] H) {
+                                                double[][] S, double[][] H) {
         List<PolyLine> cLineList = new ArrayList<>();
         int m, n, i, j;
         m = S0.length;
@@ -3981,7 +3981,7 @@ public class Contour {
     }
 
     private static List<Polygon> judgePolygonHighCenter(List<Polygon> borderPolygons, List<Polygon> closedPolygons,
-            List<PolyLine> aLineList, List<BorderPoint> borderList) {
+                                                        List<PolyLine> aLineList, List<BorderPoint> borderList) {
         int i, j;
         Polygon aPolygon;
         PolyLine aLine;
@@ -4006,10 +4006,10 @@ public class Contour {
             aPolygon = new Polygon();
             if (min == Double.MIN_VALUE) {
                 min = aValue;
-                aPolygon.IsHighCenter = true;
+                aPolygon.IsHighCenter = false;
             } else if (max == Double.MAX_VALUE) {
                 max = aValue;
-                aPolygon.IsHighCenter = false;
+                aPolygon.IsHighCenter = true;
             }
             aLine = new PolyLine();
             aLine.Type = "Border";
@@ -4068,7 +4068,7 @@ public class Contour {
     }
 
     private static List<Polygon> tracingPolygons_Ring(List<PolyLine> LineList, List<BorderPoint> borderList, Border aBorder,
-            double[] contour, int[] pNums) {
+                                                      double[] contour, int[] pNums) {
         List<Polygon> aPolygonList = new ArrayList<>();
         List<PolyLine> aLineList;
         PolyLine aLine;
@@ -4685,7 +4685,7 @@ public class Contour {
             }
         }
 
-        //Cutting            
+        //Cutting
         boolean isInPolygon = pointInPolygon(clipPList, aPList.get(0));
         PointD q1, q2, p1, p2, IPoint;
         Line lineA, lineB;
@@ -4770,7 +4770,7 @@ public class Contour {
 
         int i, j;
 
-        //Judge if all points of the polyline are in the cut polygon - outline   
+        //Judge if all points of the polyline are in the cut polygon - outline
         List<List<PointD>> newLines = new ArrayList<>();
         if (pointInPolygon(clipPList, aPList.get(0))) {
             boolean isAllIn = true;
@@ -4855,7 +4855,7 @@ public class Contour {
             borderList.add(aBP);
         }
 
-        //Cutting                     
+        //Cutting
         for (int l = 0; l < newLines.size(); l++) {
             aPList = newLines.get(l);
             boolean isInPolygon = false;
@@ -4995,7 +4995,7 @@ public class Contour {
 
         int i, j;
 
-        //Judge if all points of the polyline are in the cut polygon            
+        //Judge if all points of the polyline are in the cut polygon
         if (pointInPolygon(clipPList, aPList.get(0))) {
             boolean isAllIn = true;
             int notInIdx = 0;
@@ -5036,7 +5036,7 @@ public class Contour {
             borderList.add(aBP);
         }
 
-        //Cutting            
+        //Cutting
         boolean isInPolygon = false;
         PointD q1, q2, p1, p2, IPoint;
         Line lineA, lineB;
@@ -5348,7 +5348,7 @@ public class Contour {
             }
         }
 
-        //Tracing streamline      
+        //Tracing streamline
         double dis;
         BorderPoint borderP;
         int lineN = 0;
@@ -5934,7 +5934,7 @@ public class Contour {
     }
 
     private static boolean tracingStreamlinePoint(PointD aPoint, double[][] Dx, double[][] Dy, double[] X, double[] Y,
-            int[] iijj, boolean isForward) {
+                                                  int[] iijj, boolean isForward) {
         double a, b, c, d, val1, val2;
         double dx, dy;
         int xNum = X.length;
@@ -5960,7 +5960,7 @@ public class Contour {
         val2 = b + (d - b) * ((aPoint.Y - Y[ii]) / deltY);
         dy = val1 + (val2 - val1) * ((aPoint.X - X[jj]) / deltX);
 
-        //Tracing forward by U/V displacement components            
+        //Tracing forward by U/V displacement components
         if (isForward) {
             aPoint.X += dx;
             aPoint.Y += dy;
@@ -5969,7 +5969,7 @@ public class Contour {
             aPoint.Y -= dy;
         }
 
-        //Find the grid box that the point is located 
+        //Find the grid box that the point is located
         if (!(aPoint.X >= X[jj] && aPoint.X <= X[jj + 1] && aPoint.Y >= Y[ii] && aPoint.Y <= Y[ii + 1])) {
             if (aPoint.X < X[0] || aPoint.X > X[X.length - 1] || aPoint.Y < Y[0] || aPoint.Y > Y[Y.length - 1]) {
                 return false;
@@ -7275,7 +7275,7 @@ public class Contour {
 
         //Find the grid box that the point is located
         if (!(aPoint.X >= X[jj] && aPoint.X <= X[jj + 1] && aPoint.Y >= Y[ii] && aPoint.Y <= Y[ii + 1]
-            && aPoint.Z >= Z[mm] && aPoint.Z <= Z[mm + 1])) {
+                && aPoint.Z >= Z[mm] && aPoint.Z <= Z[mm + 1])) {
             if (aPoint.X < X[0] || aPoint.X > X[X.length - 1] || aPoint.Y < Y[0]
                     || aPoint.Y > Y[Y.length - 1] || aPoint.Z < Z[0] || aPoint.Z > Z[Z.length - 1]) {
                 return false;
@@ -7557,7 +7557,7 @@ public class Contour {
         return P.distance(p);
     }
 
-    // </editor-fold>    
+    // </editor-fold>
     // <editor-fold desc="Others">
     private static Extent getExtent(List<PointD> pList) {
         double minX, minY, maxX, maxY;
@@ -7687,15 +7687,21 @@ public class Contour {
         if (!isExtentCross(boundA, boundB)) {
             return false;
         } else {
-            double XP1 = (lineB.P1.X - lineA.P1.X) * (lineA.P2.Y - lineA.P1.Y)
-                    - (lineA.P2.X - lineA.P1.X) * (lineB.P1.Y - lineA.P1.Y);
-            double XP2 = (lineB.P2.X - lineA.P1.X) * (lineA.P2.Y - lineA.P1.Y)
-                    - (lineA.P2.X - lineA.P1.X) * (lineB.P2.Y - lineA.P1.Y);
-            if (XP1 * XP2 > 0) {
+            double denom = (lineB.P2.Y - lineB.P1.Y) * (lineA.P2.X - lineA.P1.X)
+                    - (lineB.P2.X - lineB.P1.X) * (lineA.P2.Y - lineA.P1.Y);
+            double numeA = (lineB.P2.X - lineB.P1.X) * (lineA.P1.Y - lineB.P1.Y)
+                    - (lineB.P2.Y - lineB.P1.Y) * (lineA.P1.X - lineB.P1.X);
+            double numeB = (lineA.P2.X - lineA.P1.X) * (lineA.P1.Y - lineB.P1.Y)
+                    - (lineA.P2.Y - lineA.P1.Y) * (lineA.P1.X - lineB.P1.X);
+            if (denom == 0) {
                 return false;
-            } else {
+            }
+            double uA = numeA / denom;
+            double uB = numeB / denom;
+            if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
                 return true;
             }
+            return false;
         }
     }
 
